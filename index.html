@@ -34,11 +34,20 @@
         h1 {
             font-size: 32px;
             font-weight: 400;
-            margin-bottom: 80px;
+            margin-bottom: 20px;
             color: #2d3748;
             letter-spacing: 6px;
             text-transform: uppercase;
             animation: fadeInDown 1s ease;
+        }
+        
+        .current-date {
+            font-size: 16px;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease 0.2s both;
         }
         
         .countdown-container {
@@ -256,6 +265,14 @@
             letter-spacing: 1px;
         }
         
+        .milestone-date {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 500;
+            margin-top: 3px;
+        }
+        
         /* Progress Info */
         .progress-info {
             text-align: center;
@@ -394,7 +411,12 @@
             h1 {
                 font-size: 24px;
                 letter-spacing: 4px;
-                margin-bottom: 50px;
+                margin-bottom: 15px;
+            }
+            
+            .current-date {
+                font-size: 14px;
+                margin-bottom: 40px;
             }
             
             .circle-container {
@@ -459,7 +481,8 @@
 </head>
 <body>
     <div class="main-content">
-        <h1>I am Coming Soon.....</h1>
+        <h1>I am Coming........</h1>
+        <div class="current-date" id="currentDate">January 26, 2026</div>
         
         <div class="countdown-container">
             <div class="countdown">
@@ -573,8 +596,14 @@
             </div>
             
             <div class="milestone-labels">
-                <span class="milestone-label">Start: Today</span>
-                <span class="milestone-label">Goal:One Day</span>
+                <span class="milestone-label">
+                    Start
+                    <span class="milestone-date" id="startDate">Jan 26, 2026</span>
+                </span>
+                <span class="milestone-label">
+                    Goal
+                
+                </span>
             </div>
             
             <div class="progress-info">
@@ -606,6 +635,16 @@
     <script>
         const circumference = 2 * Math.PI * 72;
         
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        function formatShortDate(date) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
         function updateCircle(elementId, current, max) {
             const circle = document.getElementById(elementId);
             const progress = current / max;
@@ -629,10 +668,14 @@
         }
         
         function updateCountdown() {
+            const now = new Date();
             const targetDate = new Date('May 1, 2026 00:00:00').getTime();
-            const startDate = new Date('January 26, 2026 00:00:00').getTime();
-            const now = new Date().getTime();
-            const difference = targetDate - now;
+            const startDate = now.getTime();
+            const difference = targetDate - now.getTime();
+            
+            // Update current date display
+            document.getElementById('currentDate').textContent = formatDate(now);
+            document.getElementById('startDate').textContent = formatShortDate(now);
             
             if (difference > 0) {
                 const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
@@ -645,9 +688,10 @@
                 const totalMinutes = Math.floor(difference / (1000 * 60));
                 const totalHours = Math.floor(difference / (1000 * 60 * 60));
                 
-                // Calculate progress
-                const totalDuration = targetDate - startDate;
-                const elapsed = now - startDate;
+                // Calculate progress (from Jan 26, 2026 to May 1, 2026)
+                const journeyStart = new Date('January 26, 2026 00:00:00').getTime();
+                const totalDuration = targetDate - journeyStart;
+                const elapsed = now.getTime() - journeyStart;
                 const progressPercent = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
                 
                 // Update countdown numbers
