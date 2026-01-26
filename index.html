@@ -1,109 +1,681 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Website</title>
+    <title>Countdown to May 1, 2026</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial;
-            text-align: center;
-            margin-top: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 80px;
+            color: #2d3748;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            animation: fadeInDown 1s ease;
         }
         
         .countdown-container {
-            margin: 50px auto;
-            max-width: 800px;
+            margin: 0 auto 80px;
+            animation: fadeInUp 1s ease 0.3s both;
+            padding: 0 20px;
         }
         
         .countdown {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            align-items: center;
+            gap: 40px;
             flex-wrap: wrap;
         }
         
         .time-unit {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 15px;
-            padding: 20px;
-            min-width: 120px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .circle-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 20px;
+        }
+        
+        .circle-bg {
+            fill: none;
+            stroke: #e2e8f0;
+            stroke-width: 8;
+        }
+        
+        .circle-progress {
+            fill: none;
+            stroke: #2d3748;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dashoffset 0.3s ease;
         }
         
         .time-number {
-            font-size: 48px;
-            font-weight: bold;
-            color: white;
-            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 56px;
+            font-weight: 300;
+            color: #2d3748;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
         }
         
         .time-label {
-            font-size: 16px;
-            color: rgba(255,255,255,0.9);
-            margin-top: 5px;
+            font-size: 14px;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 600;
+        }
+        
+        /* Journey Progress Bar */
+        .journey-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 60px auto 60px;
+            padding: 0 40px;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+        
+        .journey-title {
+            text-align: center;
+            font-size: 18px;
+            color: #2d3748;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar-container {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            background: #1e3a5f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(30, 58, 95, 0.3);
+        }
+        
+        /* Speed Lines */
+        .speed-line {
+            position: absolute;
+            left: 0;
+            height: 4px;
+            border-radius: 2px;
+            animation: speedLine 2s linear infinite;
+        }
+        
+        .speed-line:nth-child(1) {
+            top: 25%;
+            width: 100px;
+            background: linear-gradient(to right, transparent, #fbbf24, transparent);
+            animation-delay: 0s;
+        }
+        
+        .speed-line:nth-child(2) {
+            top: 40%;
+            width: 80px;
+            background: linear-gradient(to right, transparent, #f59e0b, transparent);
+            animation-delay: 0.3s;
+        }
+        
+        .speed-line:nth-child(3) {
+            top: 55%;
+            width: 120px;
+            background: linear-gradient(to right, transparent, #ea580c, transparent);
+            animation-delay: 0.6s;
+        }
+        
+        .speed-line:nth-child(4) {
+            top: 70%;
+            width: 90px;
+            background: linear-gradient(to right, transparent, #dc2626, transparent);
+            animation-delay: 0.9s;
+        }
+        
+        @keyframes speedLine {
+            0% {
+                transform: translateX(-150px);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(calc(100% + 150px));
+                opacity: 0;
+            }
+        }
+        
+        /* Progress Fill */
+        .progress-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            background: linear-gradient(to right, #3b82f6, #06b6d4);
+            border-radius: 3px;
+            transition: width 1s ease-out;
+            z-index: 2;
+        }
+        
+        /* Car */
+        .progress-car {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            transition: left 1s ease-out;
+            z-index: 10;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+        }
+        
+        .car-svg {
+            width: 80px;
+            height: auto;
+        }
+        
+        /* Simplified Car Design */
+        .car-body-main {
+            fill: #e5e7eb;
+        }
+        
+        .car-window {
+            fill: #60a5fa;
+            opacity: 0.7;
+        }
+        
+        .car-wheel {
+            fill: #1f2937;
+            animation: wheelSpin 0.6s linear infinite;
+        }
+        
+        @keyframes wheelSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .car-detail {
+            fill: #9ca3af;
+        }
+        
+        /* Milestone Labels */
+        .milestone-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 0 10px;
+        }
+        
+        .milestone-label {
+            font-size: 12px;
+            color: #475569;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+        
+        /* Progress Info */
+        .progress-info {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .progress-percentage {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1e3a5f;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .progress-text {
+            font-size: 13px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        
+        footer {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 60px 20px 80px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        footer h3 {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 400;
+            margin-bottom: 50px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        
+        .footer-countdown {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 30px;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        .total-time-unit {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 50px 40px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 320px;
+            min-height: 180px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .total-time-unit:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .total-time-number {
+            font-size: 52px;
+            font-weight: 300;
+            color: #2d3748;
+            margin: 0;
+            line-height: 1.3;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            white-space: nowrap;
+            overflow: visible;
+        }
+        
+        .total-time-label {
+            font-size: 11px;
+            color: #718096;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .total-time-number {
+                font-size: 44px;
+            }
+            
+            .total-time-unit {
+                padding: 45px 35px;
+                min-width: 220px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px;
+                letter-spacing: 4px;
+                margin-bottom: 50px;
+            }
+            
+            .circle-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .time-number {
+                font-size: 42px;
+            }
+            
+            .time-label {
+                font-size: 12px;
+            }
+            
+            .countdown {
+                gap: 25px;
+            }
+            
+            .journey-container {
+                padding: 0 20px;
+            }
+            
+            .progress-bar-container {
+                height: 60px;
+            }
+            
+            .car-svg {
+                width: 60px;
+            }
+            
+            .progress-percentage {
+                font-size: 28px;
+            }
+            
+            .total-time-number {
+                font-size: 36px;
+            }
+            
+            .total-time-unit {
+                min-width: 180px;
+                max-width: 100%;
+                padding: 40px 25px;
+                min-height: 160px;
+            }
+            
+            .footer-countdown {
+                gap: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .total-time-number {
+                font-size: 32px;
+            }
+            
+            .total-time-unit {
+                padding: 35px 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Counting Down to Our Next Chapter 💝</h1>
-  
-    
-    <div class="countdown-container d-flex">
-     
-        <div class="countdown">
-            <div class="time-unit">
-                <div class="time-number" id="months">0</div>
-                <div class="time-label">Months</div>
+    <div class="main-content">
+        <h1>I am Coming Soon.....</h1>
+        
+        <div class="countdown-container">
+            <div class="countdown">
+                <div class="time-unit">
+                    <div class="circle-container">
+                        <svg width="160" height="160">
+                            <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
+                            <circle class="circle-progress" id="monthsCircle" cx="80" cy="80" r="72" 
+                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="time-number" id="months">0</div>
+                    </div>
+                    <div class="time-label">Months</div>
+                </div>
+                
+                <div class="time-unit">
+                    <div class="circle-container">
+                        <svg width="160" height="160">
+                            <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
+                            <circle class="circle-progress" id="daysCircle" cx="80" cy="80" r="72" 
+                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="time-number" id="days">0</div>
+                    </div>
+                    <div class="time-label">Days</div>
+                </div>
+                
+                <div class="time-unit">
+                    <div class="circle-container">
+                        <svg width="160" height="160">
+                            <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
+                            <circle class="circle-progress" id="hoursCircle" cx="80" cy="80" r="72" 
+                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="time-number" id="hours">0</div>
+                    </div>
+                    <div class="time-label">Hours</div>
+                </div>
+                
+                <div class="time-unit">
+                    <div class="circle-container">
+                        <svg width="160" height="160">
+                            <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
+                            <circle class="circle-progress" id="minutesCircle" cx="80" cy="80" r="72" 
+                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="time-number" id="minutes">0</div>
+                    </div>
+                    <div class="time-label">Minutes</div>
+                </div>
+                
+                <div class="time-unit">
+                    <div class="circle-container">
+                        <svg width="160" height="160">
+                            <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
+                            <circle class="circle-progress" id="secondsCircle" cx="80" cy="80" r="72" 
+                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                        </svg>
+                        <div class="time-number" id="seconds">0</div>
+                    </div>
+                    <div class="time-label">Seconds</div>
+                </div>
             </div>
-            <div class="time-unit">
-                <div class="time-number" id="days">0</div>
-                <div class="time-label">Days</div>
+        </div>
+        
+        <!-- Journey Progress -->
+        <div class="journey-container">
+            <div class="journey-title">Journey Progress</div>
+            
+            <div class="progress-bar-container">
+                <!-- Animated Speed Lines -->
+                <div class="speed-line"></div>
+                <div class="speed-line"></div>
+                <div class="speed-line"></div>
+                <div class="speed-line"></div>
+                
+                <!-- Progress Fill -->
+                <div class="progress-fill" id="progressFill"></div>
+                
+                <!-- Car -->
+                <div class="progress-car" id="progressCar">
+                    <svg class="car-svg" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Car Body -->
+                        <rect class="car-body-main" x="10" y="25" width="80" height="18" rx="4"/>
+                        <!-- Car Roof -->
+                        <path class="car-body-main" d="M 30 25 L 40 12 L 65 12 L 72 25 Z"/>
+                        <!-- Windshield -->
+                        <path class="car-window" d="M 42 14 L 48 25 L 68 25 L 63 14 Z"/>
+                        <!-- Side Windows -->
+                        <rect class="car-window" x="15" y="28" width="12" height="10" rx="1"/>
+                        <rect class="car-window" x="73" y="28" width="12" height="10" rx="1"/>
+                        <!-- Front bumper detail -->
+                        <rect class="car-detail" x="85" y="30" width="5" height="8" rx="1"/>
+                        <!-- Back bumper detail -->
+                        <rect class="car-detail" x="10" y="30" width="5" height="8" rx="1"/>
+                        <!-- Wheels -->
+                        <g class="car-wheel" transform-origin="25 43">
+                            <circle cx="25" cy="43" r="7" fill="#1f2937"/>
+                            <circle cx="25" cy="43" r="4" fill="#4b5563"/>
+                            <circle cx="25" cy="43" r="2" fill="#6b7280"/>
+                        </g>
+                        <g class="car-wheel" transform-origin="75 43">
+                            <circle cx="75" cy="43" r="7" fill="#1f2937"/>
+                            <circle cx="75" cy="43" r="4" fill="#4b5563"/>
+                            <circle cx="75" cy="43" r="2" fill="#6b7280"/>
+                        </g>
+                        <!-- Headlight -->
+                        <circle cx="88" cy="34" r="2" fill="#fef08a" opacity="0.9"/>
+                    </svg>
+                </div>
             </div>
-            <div class="time-unit">
-                <div class="time-number" id="hours">0</div>
-                <div class="time-label">Hours</div>
+            
+            <div class="milestone-labels">
+                <span class="milestone-label">Start: Today</span>
+                <span class="milestone-label">Goal:One Day</span>
             </div>
-            <div class="time-unit">
-                <div class="time-number" id="minutes">0</div>
-                <div class="time-label">Minutes</div>
-            </div>
-            <div class="time-unit">
-                <div class="time-number" id="seconds">0</div>
-                <div class="time-label">Seconds</div>
+            
+            <div class="progress-info">
+                <div class="progress-percentage" id="progressPercent">0%</div>
+                <div class="progress-text">Journey Complete</div>
             </div>
         </div>
     </div>
-    
-    <p> Coming soon....</p>
 
+    <footer>
+        <h3>Total Time Remaining</h3>
+        <div class="footer-countdown">
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalHours">0</div>
+                <div class="total-time-label">Hours Left</div>
+            </div>
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalMinutes">0</div>
+                <div class="total-time-label">Minutes Left</div>
+            </div>
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalSeconds">0</div>
+                <div class="total-time-label">Seconds Left</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const circumference = 2 * Math.PI * 72;
+        
+        function updateCircle(elementId, current, max) {
+            const circle = document.getElementById(elementId);
+            const progress = current / max;
+            const offset = circumference * (1 - progress);
+            circle.style.strokeDashoffset = offset;
+        }
+        
+        function updateProgress(progressPercent) {
+            const car = document.getElementById('progressCar');
+            const fill = document.getElementById('progressFill');
+            const percentDisplay = document.getElementById('progressPercent');
+            
+            // Update car position
+            car.style.left = progressPercent + '%';
+            
+            // Update progress fill
+            fill.style.width = progressPercent + '%';
+            
+            // Update percentage display
+            percentDisplay.textContent = Math.round(progressPercent) + '%';
+        }
+        
         function updateCountdown() {
             const targetDate = new Date('May 1, 2026 00:00:00').getTime();
+            const startDate = new Date('January 26, 2026 00:00:00').getTime();
             const now = new Date().getTime();
             const difference = targetDate - now;
             
             if (difference > 0) {
-                // Calculate time units
                 const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
                 const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((difference % (1000 * 60)) / 1000);
                 
-                // Update the display
-                document.getElementById('months').textContent = months;
-                document.getElementById('days').textContent = days;
-                document.getElementById('hours').textContent = hours;
+                const totalSeconds = Math.floor(difference / 1000);
+                const totalMinutes = Math.floor(difference / (1000 * 60));
+                const totalHours = Math.floor(difference / (1000 * 60 * 60));
+                
+                // Calculate progress
+                const totalDuration = targetDate - startDate;
+                const elapsed = now - startDate;
+                const progressPercent = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
+                
+                // Update countdown numbers
+                document.getElementById('months').textContent = String(months).padStart(2, '0');
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
                 document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
                 document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+                
+                // Update circles
+                updateCircle('monthsCircle', months, 12);
+                updateCircle('daysCircle', days, 30);
+                updateCircle('hoursCircle', hours, 24);
+                updateCircle('minutesCircle', minutes, 60);
+                updateCircle('secondsCircle', seconds, 60);
+                
+                // Update progress
+                updateProgress(progressPercent);
+                
+                // Update footer
+                document.getElementById('totalHours').textContent = totalHours.toLocaleString();
+                document.getElementById('totalMinutes').textContent = totalMinutes.toLocaleString();
+                document.getElementById('totalSeconds').textContent = totalSeconds.toLocaleString();
             } else {
-                // Countdown finished
-                document.querySelector('.countdown-container').innerHTML = '<h2>🎉 The day has arrived! 🎉</h2>';
+                updateProgress(100);
             }
         }
         
-        // Update immediately and then every second
         updateCountdown();
         setInterval(updateCountdown, 1000);
     </script>
