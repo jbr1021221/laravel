@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Countdown to May 1, 2026</title>
+    <title>Countdown </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         * {
@@ -146,46 +146,46 @@
             box-shadow: 0 8px 32px rgba(30, 58, 95, 0.3);
         }
         
-        /* Speed Lines */
+        /* Speed Lines - Moving RIGHT TO LEFT (behind the car) */
         .speed-line {
             position: absolute;
-            left: 0;
+            right: 0;
             height: 4px;
             border-radius: 2px;
-            animation: speedLine 2s linear infinite;
+            animation: speedLineBackward 1.5s linear infinite;
         }
         
         .speed-line:nth-child(1) {
             top: 25%;
             width: 100px;
-            background: linear-gradient(to right, transparent, #fbbf24, transparent);
+            background: linear-gradient(to left, transparent, #fbbf24, transparent);
             animation-delay: 0s;
         }
         
         .speed-line:nth-child(2) {
             top: 40%;
             width: 80px;
-            background: linear-gradient(to right, transparent, #f59e0b, transparent);
-            animation-delay: 0.3s;
+            background: linear-gradient(to left, transparent, #f59e0b, transparent);
+            animation-delay: 0.2s;
         }
         
         .speed-line:nth-child(3) {
             top: 55%;
             width: 120px;
-            background: linear-gradient(to right, transparent, #ea580c, transparent);
-            animation-delay: 0.6s;
+            background: linear-gradient(to left, transparent, #ea580c, transparent);
+            animation-delay: 0.4s;
         }
         
         .speed-line:nth-child(4) {
             top: 70%;
             width: 90px;
-            background: linear-gradient(to right, transparent, #dc2626, transparent);
-            animation-delay: 0.9s;
+            background: linear-gradient(to left, transparent, #dc2626, transparent);
+            animation-delay: 0.6s;
         }
         
-        @keyframes speedLine {
+        @keyframes speedLineBackward {
             0% {
-                transform: translateX(-150px);
+                transform: translateX(150px);
                 opacity: 0;
             }
             20% {
@@ -195,7 +195,7 @@
                 opacity: 1;
             }
             100% {
-                transform: translateX(calc(100% + 150px));
+                transform: translateX(calc(-100% - 150px));
                 opacity: 0;
             }
         }
@@ -212,7 +212,7 @@
             z-index: 2;
         }
         
-        /* Car */
+        /* Car - Facing RIGHT */
         .progress-car {
             position: absolute;
             top: 50%;
@@ -227,7 +227,7 @@
             height: auto;
         }
         
-        /* Simplified Car Design */
+        /* Car Design - Flipped to face RIGHT */
         .car-body-main {
             fill: #e5e7eb;
         }
@@ -644,7 +644,7 @@
 </head>
 <body>
     <div class="main-content">
-        <h1>I am coming soon .........</h1>
+        <h1>I am Coming....</h1>
         <div class="current-date" id="currentDate">January 26, 2026</div>
         
         <div class="countdown-container">
@@ -716,7 +716,7 @@
             <div class="journey-title">Journey Progress</div>
             
             <div class="progress-bar-container">
-                <!-- Animated Speed Lines -->
+                <!-- Animated Speed Lines - Moving RIGHT TO LEFT -->
                 <div class="speed-line"></div>
                 <div class="speed-line"></div>
                 <div class="speed-line"></div>
@@ -725,35 +725,38 @@
                 <!-- Progress Fill -->
                 <div class="progress-fill" id="progressFill"></div>
                 
-                <!-- Car -->
+                <!-- Car Facing RIGHT -->
                 <div class="progress-car" id="progressCar">
                     <svg class="car-svg" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Car Body -->
+                        <!-- Car Body (facing right) -->
                         <rect class="car-body-main" x="10" y="25" width="80" height="18" rx="4"/>
-                        <!-- Car Roof -->
-                        <path class="car-body-main" d="M 30 25 L 40 12 L 65 12 L 72 25 Z"/>
-                        <!-- Windshield -->
-                        <path class="car-window" d="M 42 14 L 48 25 L 68 25 L 63 14 Z"/>
+                        <!-- Car Roof (facing right) -->
+                        <path class="car-body-main" d="M 28 25 L 35 12 L 60 12 L 70 25 Z"/>
+                        <!-- Windshield (facing right) -->
+                        <path class="car-window" d="M 37 14 L 32 25 L 52 25 L 58 14 Z"/>
                         <!-- Side Windows -->
                         <rect class="car-window" x="15" y="28" width="12" height="10" rx="1"/>
                         <rect class="car-window" x="73" y="28" width="12" height="10" rx="1"/>
-                        <!-- Front bumper detail -->
+                        <!-- Front bumper detail (right side) -->
                         <rect class="car-detail" x="85" y="30" width="5" height="8" rx="1"/>
-                        <!-- Back bumper detail -->
+                        <!-- Back bumper detail (left side) -->
                         <rect class="car-detail" x="10" y="30" width="5" height="8" rx="1"/>
-                        <!-- Wheels -->
+                        <!-- Back Wheels (left) -->
                         <g class="car-wheel" transform-origin="25 43">
                             <circle cx="25" cy="43" r="7" fill="#1f2937"/>
                             <circle cx="25" cy="43" r="4" fill="#4b5563"/>
                             <circle cx="25" cy="43" r="2" fill="#6b7280"/>
                         </g>
+                        <!-- Front Wheels (right) -->
                         <g class="car-wheel" transform-origin="75 43">
                             <circle cx="75" cy="43" r="7" fill="#1f2937"/>
                             <circle cx="75" cy="43" r="4" fill="#4b5563"/>
                             <circle cx="75" cy="43" r="2" fill="#6b7280"/>
                         </g>
-                        <!-- Headlight -->
+                        <!-- Headlight (front/right) -->
                         <circle cx="88" cy="34" r="2" fill="#fef08a" opacity="0.9"/>
+                        <!-- Taillight (back/left) -->
+                        <circle cx="12" cy="34" r="2" fill="#ef4444" opacity="0.8"/>
                     </svg>
                 </div>
             </div>
