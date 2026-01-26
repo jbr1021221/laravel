@@ -39,6 +39,7 @@
             letter-spacing: 6px;
             text-transform: uppercase;
             animation: fadeInDown 1s ease;
+            text-align: center;
         }
         
         .current-date {
@@ -48,6 +49,7 @@
             letter-spacing: 2px;
             margin-bottom: 60px;
             animation: fadeInDown 1s ease 0.2s both;
+            text-align: center;
         }
         
         .countdown-container {
@@ -396,9 +398,37 @@
             }
         }
         
+        /* Tablet Responsive */
         @media (max-width: 992px) {
+            h1 {
+                font-size: 28px;
+                letter-spacing: 4px;
+            }
+            
+            .current-date {
+                font-size: 15px;
+                margin-bottom: 50px;
+            }
+            
+            .circle-container {
+                width: 140px;
+                height: 140px;
+            }
+            
+            .time-number {
+                font-size: 50px;
+            }
+            
+            .journey-title {
+                font-size: 16px;
+            }
+            
+            .progress-percentage {
+                font-size: 38px;
+            }
+            
             .total-time-number {
-                font-size: 44px;
+                font-size: 46px;
             }
             
             .total-time-unit {
@@ -407,88 +437,221 @@
             }
         }
         
+        /* Mobile Responsive - MUCH LARGER SIZES */
         @media (max-width: 768px) {
+            .main-content {
+                padding: 40px 15px;
+            }
+            
             h1 {
-                font-size: 24px;
-                letter-spacing: 4px;
-                margin-bottom: 15px;
+                font-size: 28px;
+                letter-spacing: 3px;
+                margin-bottom: 18px;
             }
             
             .current-date {
-                font-size: 14px;
-                margin-bottom: 40px;
+                font-size: 16px;
+                margin-bottom: 45px;
             }
             
-            .circle-container {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .time-number {
-                font-size: 42px;
-            }
-            
-            .time-label {
-                font-size: 12px;
+            .countdown-container {
+                margin-bottom: 60px;
             }
             
             .countdown {
-                gap: 25px;
+                gap: 35px;
+            }
+            
+            /* MUCH LARGER circles on mobile */
+            .circle-container {
+                width: 160px;
+                height: 160px;
+            }
+            
+            /* MUCH LARGER numbers on mobile */
+            .time-number {
+                font-size: 60px;
+                font-weight: 400;
+            }
+            
+            /* MUCH LARGER labels on mobile */
+            .time-label {
+                font-size: 15px;
+                letter-spacing: 2.5px;
+                font-weight: 700;
             }
             
             .journey-container {
-                padding: 0 20px;
+                padding: 0 15px;
+                margin: 60px auto 60px;
             }
             
+            .journey-title {
+                font-size: 18px;
+                margin-bottom: 30px;
+                letter-spacing: 2.5px;
+            }
+            
+            /* LARGER progress bar on mobile */
             .progress-bar-container {
-                height: 60px;
+                height: 80px;
             }
             
+            /* LARGER car on mobile */
             .car-svg {
-                width: 60px;
+                width: 80px;
             }
             
+            /* LARGER milestone labels on mobile */
+            .milestone-label {
+                font-size: 13px;
+                font-weight: 700;
+            }
+            
+            .milestone-date {
+                font-size: 12px;
+            }
+            
+            /* MUCH LARGER progress percentage on mobile */
             .progress-percentage {
-                font-size: 28px;
+                font-size: 56px;
+                font-weight: 800;
+                margin-top: 10px;
             }
             
-            .total-time-number {
-                font-size: 36px;
+            .progress-text {
+                font-size: 14px;
+                letter-spacing: 2.5px;
+                margin-top: 8px;
             }
             
-            .total-time-unit {
-                min-width: 180px;
-                max-width: 100%;
-                padding: 40px 25px;
-                min-height: 160px;
+            footer {
+                padding: 60px 15px 70px;
+            }
+            
+            /* LARGER footer title on mobile */
+            footer h3 {
+                font-size: 20px;
+                margin-bottom: 45px;
+                letter-spacing: 3px;
             }
             
             .footer-countdown {
-                gap: 20px;
+                gap: 25px;
+            }
+            
+            /* MUCH LARGER footer boxes on mobile */
+            .total-time-unit {
+                min-width: 300px;
+                max-width: 100%;
+                padding: 50px 35px;
+                min-height: 190px;
+            }
+            
+            /* MUCH LARGER footer numbers on mobile */
+            .total-time-number {
+                font-size: 56px;
+                font-weight: 400;
+            }
+            
+            /* LARGER footer labels on mobile */
+            .total-time-label {
+                font-size: 13px;
+                margin-top: 20px;
+                letter-spacing: 2.5px;
+                font-weight: 700;
             }
         }
         
+        /* Extra Small Mobile - Still Large */
         @media (max-width: 480px) {
-            .total-time-number {
-                font-size: 32px;
+            h1 {
+                font-size: 24px;
+                letter-spacing: 2px;
             }
             
+            .current-date {
+                font-size: 15px;
+            }
+            
+            .countdown {
+                gap: 30px;
+            }
+            
+            /* Keep LARGE on small screens */
+            .circle-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .time-number {
+                font-size: 56px;
+            }
+            
+            .time-label {
+                font-size: 14px;
+            }
+            
+            .journey-title {
+                font-size: 17px;
+            }
+            
+            .progress-bar-container {
+                height: 75px;
+            }
+            
+            .car-svg {
+                width: 75px;
+            }
+            
+            .milestone-label {
+                font-size: 12px;
+            }
+            
+            .milestone-date {
+                font-size: 11px;
+            }
+            
+            /* Keep progress percentage LARGE */
+            .progress-percentage {
+                font-size: 52px;
+            }
+            
+            .progress-text {
+                font-size: 13px;
+            }
+            
+            footer h3 {
+                font-size: 18px;
+            }
+            
+            /* Keep footer boxes LARGE */
             .total-time-unit {
-                padding: 35px 20px;
+                min-width: 280px;
+                padding: 48px 30px;
+                min-height: 180px;
+            }
+            
+            .total-time-number {
+                font-size: 52px;
+            }
+            
+            .total-time-label {
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
     <div class="main-content">
-        <h1>I am Coming........</h1>
+        <h1>We Are Coming Soon</h1>
         <div class="current-date" id="currentDate">January 26, 2026</div>
         
         <div class="countdown-container">
             <div class="countdown">
                 <div class="time-unit">
                     <div class="circle-container">
-                        <svg width="160" height="160">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
                             <circle class="circle-progress" id="monthsCircle" cx="80" cy="80" r="72" 
                                     stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
@@ -500,7 +663,7 @@
                 
                 <div class="time-unit">
                     <div class="circle-container">
-                        <svg width="160" height="160">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
                             <circle class="circle-progress" id="daysCircle" cx="80" cy="80" r="72" 
                                     stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
@@ -512,7 +675,7 @@
                 
                 <div class="time-unit">
                     <div class="circle-container">
-                        <svg width="160" height="160">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
                             <circle class="circle-progress" id="hoursCircle" cx="80" cy="80" r="72" 
                                     stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
@@ -524,7 +687,7 @@
                 
                 <div class="time-unit">
                     <div class="circle-container">
-                        <svg width="160" height="160">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
                             <circle class="circle-progress" id="minutesCircle" cx="80" cy="80" r="72" 
                                     stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
@@ -536,7 +699,7 @@
                 
                 <div class="time-unit">
                     <div class="circle-container">
-                        <svg width="160" height="160">
+                        <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
                             <circle class="circle-progress" id="secondsCircle" cx="80" cy="80" r="72" 
                                     stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
@@ -602,7 +765,7 @@
                 </span>
                 <span class="milestone-label">
                     Goal
-                
+                    <span class="milestone-date">May 1, 2026</span>
                 </span>
             </div>
             
