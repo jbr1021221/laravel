@@ -2,11 +2,110 @@
 <html>
 <head>
     <title>My Website</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .countdown-container {
+            margin: 50px auto;
+            max-width: 800px;
+        }
+        
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .time-unit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 120px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .time-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin: 0;
+        }
+        
+        .time-label {
+            font-size: 16px;
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
-<body style="font-family: Arial; text-align:center; margin-top:100px;">
-    <h1>Welcome to threbew.com 🚀</h1>
-    <h2>Hello <span style="color: rgb(184, 21, 102);">Threbew</span></h2>
-    <p>This is my new website.</p>
-    <p>Contentent coming soon....</p>
+<body>
+    <h1>Counting Down to Our Next Chapter 💝</h1>
+  
+    
+    <div class="countdown-container d-flex">
+     
+        <div class="countdown">
+            <div class="time-unit">
+                <div class="time-number" id="months">0</div>
+                <div class="time-label">Months</div>
+            </div>
+            <div class="time-unit">
+                <div class="time-number" id="days">0</div>
+                <div class="time-label">Days</div>
+            </div>
+            <div class="time-unit">
+                <div class="time-number" id="hours">0</div>
+                <div class="time-label">Hours</div>
+            </div>
+            <div class="time-unit">
+                <div class="time-number" id="minutes">0</div>
+                <div class="time-label">Minutes</div>
+            </div>
+            <div class="time-unit">
+                <div class="time-number" id="seconds">0</div>
+                <div class="time-label">Seconds</div>
+            </div>
+        </div>
+    </div>
+    
+    <p> Coming soon....</p>
+
+    <script>
+        function updateCountdown() {
+            const targetDate = new Date('May 1, 2026 00:00:00').getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+            
+            if (difference > 0) {
+                // Calculate time units
+                const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
+                const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                
+                // Update the display
+                document.getElementById('months').textContent = months;
+                document.getElementById('days').textContent = days;
+                document.getElementById('hours').textContent = hours;
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            } else {
+                // Countdown finished
+                document.querySelector('.countdown-container').innerHTML = '<h2>🎉 The day has arrived! 🎉</h2>';
+            }
+        }
+        
+        // Update immediately and then every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
