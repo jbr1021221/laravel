@@ -1,0 +1,785 @@
+/* ====================================
+   Countdown Timer - Styles
+   ==================================== */
+
+/* ---- Reset & Base ---- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ---- Main Content Layout ---- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 400;
+    margin-bottom: 20px;
+    color: #2d3748;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    animation: fadeInDown 1s ease;
+    text-align: center;
+}
+
+.current-date {
+    font-size: 16px;
+    color: #64748b;
+    font-weight: 500;
+    letter-spacing: 2px;
+    margin-bottom: 60px;
+    animation: fadeInDown 1s ease 0.2s both;
+    text-align: center;
+}
+
+/* ---- Countdown Section ---- */
+.countdown-container {
+    margin: 0 auto 80px;
+    animation: fadeInUp 1s ease 0.3s both;
+    padding: 0 20px;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.circle-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 20px;
+}
+
+.circle-bg {
+    fill: none;
+    stroke: #e2e8f0;
+    stroke-width: 8;
+}
+
+.circle-progress {
+    fill: none;
+    stroke: #2d3748;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    transition: stroke-dashoffset 0.3s ease;
+}
+
+.time-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 56px;
+    font-weight: 300;
+    color: #2d3748;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+.time-label {
+    font-size: 14px;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 600;
+}
+
+/* ---- Journey Progress Bar ---- */
+.journey-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 60px auto 60px;
+    padding: 0 40px;
+    animation: fadeIn 1s ease 0.6s both;
+}
+
+.journey-title {
+    text-align: center;
+    font-size: 18px;
+    color: #2d3748;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+
+/* ========================================
+   CLEAN PROGRESS BAR - Matching Theme
+   ======================================== */
+
+.progress-bar-container {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    background: #1e3a5f;
+    border-radius: 12px;
+    overflow: visible;
+    box-shadow: 0 8px 32px rgba(30, 58, 95, 0.3);
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+
+/* Speed Lines Animation */
+.speed-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.speed-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(to left, transparent, rgba(255, 255, 255, 0.4), transparent);
+    border-radius: 2px;
+    animation: speedLine 1.5s linear infinite;
+}
+
+.speed-line:nth-child(1) {
+    top: 20%;
+    width: 60px;
+    animation-delay: 0s;
+}
+
+.speed-line:nth-child(2) {
+    top: 35%;
+    width: 80px;
+    animation-delay: 0.25s;
+}
+
+.speed-line:nth-child(3) {
+    top: 50%;
+    width: 50px;
+    animation-delay: 0.5s;
+}
+
+.speed-line:nth-child(4) {
+    top: 65%;
+    width: 70px;
+    animation-delay: 0.75s;
+}
+
+.speed-line:nth-child(5) {
+    top: 80%;
+    width: 55px;
+    animation-delay: 1s;
+}
+
+.speed-line:nth-child(6) {
+    top: 45%;
+    width: 40px;
+    animation-delay: 1.25s;
+}
+
+@keyframes speedLine {
+    0% {
+        right: -100px;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        right: 100%;
+        opacity: 0;
+    }
+}
+
+/* Progress Track */
+.progress-track {
+    position: relative;
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 2;
+}
+
+/* Progress Fill */
+.progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(to right, #3b82f6, #06b6d4);
+    border-radius: 4px;
+    transition: width 1s ease-out;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+}
+
+/* Car Icon */
+.progress-car {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    transition: left 1s ease-out;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Seconds Counter above car */
+.car-seconds {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    color: #1e3a5f;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    padding: 6px 14px;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    white-space: nowrap;
+    animation: pulse 1s ease-in-out infinite;
+    border: 2px solid #3b82f6;
+}
+
+.car-seconds::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ffffff;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        transform: translateX(-50%) scale(1.08);
+    }
+}
+
+.car-icon {
+    width: 36px;
+    height: 36px;
+    color: #ffffff;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Milestone Markers */
+.milestone-marker {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    border: 3px solid #1e3a5f;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.start-marker {
+    left: 25px;
+}
+
+.end-marker {
+    right: 25px;
+}
+
+/* Marker Seconds Labels */
+.marker-seconds {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    color: #1e3a5f;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.marker-seconds::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid rgba(255, 255, 255, 0.9);
+}
+
+.end-seconds {
+    background: #22c55e;
+    color: #ffffff;
+}
+
+.end-seconds::after {
+    border-top-color: #22c55e;
+}
+
+/* ---- Milestone Labels ---- */
+.milestone-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    padding: 0 10px;
+}
+
+.milestone-label {
+    font-size: 12px;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.milestone-date {
+    display: block;
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+    margin-top: 3px;
+}
+
+/* ---- Progress Info ---- */
+.progress-info {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.progress-percentage {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1e3a5f;
+    font-family: 'Courier New', monospace;
+}
+
+.progress-text {
+    font-size: 13px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 5px;
+}
+
+/* ---- Footer ---- */
+footer {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    padding: 60px 20px 80px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+footer h3 {
+    color: #2d3748;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 50px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.footer-countdown {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.total-time-unit {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 50px 40px;
+    flex: 1;
+    min-width: 250px;
+    max-width: 320px;
+    min-height: 180px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.total-time-unit:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.total-time-number {
+    font-size: 52px;
+    font-weight: 300;
+    color: #2d3748;
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.total-time-label {
+    font-size: 11px;
+    color: #718096;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ---- Keyframe Animations ---- */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ==================================
+   Responsive Design
+   ================================== */
+
+/* ---- Tablet ---- */
+@media (max-width: 992px) {
+    h1 {
+        font-size: 28px;
+        letter-spacing: 4px;
+    }
+
+    .current-date {
+        font-size: 15px;
+        margin-bottom: 50px;
+    }
+
+    .circle-container {
+        width: 140px;
+        height: 140px;
+    }
+
+    .time-number {
+        font-size: 50px;
+    }
+
+    .journey-title {
+        font-size: 16px;
+    }
+
+    .progress-bar-container {
+        height: 70px;
+        padding: 0 30px;
+    }
+
+    .car-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .progress-percentage {
+        font-size: 38px;
+    }
+
+    .total-time-number {
+        font-size: 46px;
+    }
+
+    .total-time-unit {
+        padding: 45px 35px;
+        min-width: 220px;
+    }
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 40px 15px;
+    }
+
+    h1 {
+        font-size: 28px;
+        letter-spacing: 3px;
+        margin-bottom: 18px;
+    }
+
+    .current-date {
+        font-size: 16px;
+        margin-bottom: 45px;
+    }
+
+    .countdown-container {
+        margin-bottom: 60px;
+    }
+
+    .countdown {
+        gap: 35px;
+    }
+
+    .circle-container {
+        width: 160px;
+        height: 160px;
+    }
+
+    .time-number {
+        font-size: 60px;
+        font-weight: 400;
+    }
+
+    .time-label {
+        font-size: 15px;
+        letter-spacing: 2.5px;
+        font-weight: 700;
+    }
+
+    .journey-container {
+        padding: 0 15px;
+        margin: 60px auto 60px;
+    }
+
+    .journey-title {
+        font-size: 18px;
+        margin-bottom: 30px;
+        letter-spacing: 2.5px;
+    }
+
+    .progress-bar-container {
+        height: 65px;
+        padding: 0 25px;
+    }
+
+    .car-icon {
+        width: 28px;
+        height: 28px;
+    }
+
+    .milestone-marker {
+        width: 10px;
+        height: 10px;
+    }
+
+    .start-marker {
+        left: 15px;
+    }
+
+    .end-marker {
+        right: 15px;
+    }
+
+    .milestone-label {
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .milestone-date {
+        font-size: 12px;
+    }
+
+    .progress-percentage {
+        font-size: 56px;
+        font-weight: 800;
+        margin-top: 10px;
+    }
+
+    .progress-text {
+        font-size: 14px;
+        letter-spacing: 2.5px;
+        margin-top: 8px;
+    }
+
+    footer {
+        padding: 60px 15px 70px;
+    }
+
+    footer h3 {
+        font-size: 20px;
+        margin-bottom: 45px;
+        letter-spacing: 3px;
+    }
+
+    .footer-countdown {
+        gap: 25px;
+    }
+
+    .total-time-unit {
+        min-width: 300px;
+        max-width: 100%;
+        padding: 50px 35px;
+        min-height: 190px;
+    }
+
+    .total-time-number {
+        font-size: 56px;
+        font-weight: 400;
+    }
+
+    .total-time-label {
+        font-size: 13px;
+        margin-top: 20px;
+        letter-spacing: 2.5px;
+        font-weight: 700;
+    }
+}
+
+/* ---- Extra Small Mobile ---- */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 24px;
+        letter-spacing: 2px;
+    }
+
+    .current-date {
+        font-size: 15px;
+    }
+
+    .countdown {
+        gap: 30px;
+    }
+
+    .circle-container {
+        width: 150px;
+        height: 150px;
+    }
+
+    .time-number {
+        font-size: 56px;
+    }
+
+    .time-label {
+        font-size: 14px;
+    }
+
+    .journey-title {
+        font-size: 17px;
+    }
+
+    .progress-bar-container {
+        height: 60px;
+        padding: 0 20px;
+    }
+
+    .car-icon {
+        width: 24px;
+        height: 24px;
+    }
+
+    .milestone-label {
+        font-size: 12px;
+    }
+
+    .milestone-date {
+        font-size: 11px;
+    }
+
+    .progress-percentage {
+        font-size: 52px;
+    }
+
+    .progress-text {
+        font-size: 13px;
+    }
+
+    footer h3 {
+        font-size: 18px;
+    }
+
+    .total-time-unit {
+        min-width: 280px;
+        padding: 48px 30px;
+        min-height: 180px;
+    }
+
+    .total-time-number {
+        font-size: 52px;
+    }
+
+    .total-time-label {
+        font-size: 12px;
+    }
+}

@@ -1,766 +1,134 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Countdown </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Countdown timer to May 1, 2026 with animated progress visualization">
+    <title>Countdown Timer</title>
+
+    <!-- External Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 60px 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        h1 {
-            font-size: 32px;
-            font-weight: 400;
-            margin-bottom: 20px;
-            color: #2d3748;
-            letter-spacing: 6px;
-            text-transform: uppercase;
-            animation: fadeInDown 1s ease;
-            text-align: center;
-        }
-        
-        .current-date {
-            font-size: 16px;
-            color: #64748b;
-            font-weight: 500;
-            letter-spacing: 2px;
-            margin-bottom: 60px;
-            animation: fadeInDown 1s ease 0.2s both;
-            text-align: center;
-        }
-        
-        .countdown-container {
-            margin: 0 auto 80px;
-            animation: fadeInUp 1s ease 0.3s both;
-            padding: 0 20px;
-        }
-        
-        .countdown {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            flex-wrap: wrap;
-        }
-        
-        .time-unit {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-        
-        .circle-container {
-            position: relative;
-            width: 160px;
-            height: 160px;
-            margin-bottom: 20px;
-        }
-        
-        .circle-bg {
-            fill: none;
-            stroke: #e2e8f0;
-            stroke-width: 8;
-        }
-        
-        .circle-progress {
-            fill: none;
-            stroke: #2d3748;
-            stroke-width: 8;
-            stroke-linecap: round;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            transition: stroke-dashoffset 0.3s ease;
-        }
-        
-        .time-number {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 56px;
-            font-weight: 300;
-            color: #2d3748;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-        }
-        
-        .time-label {
-            font-size: 14px;
-            color: #4a5568;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 600;
-        }
-        
-        /* Journey Progress Bar */
-        .journey-container {
-            width: 100%;
-            max-width: 900px;
-            margin: 60px auto 60px;
-            padding: 0 40px;
-            animation: fadeIn 1s ease 0.6s both;
-        }
-        
-        .journey-title {
-            text-align: center;
-            font-size: 18px;
-            color: #2d3748;
-            font-weight: 400;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 30px;
-        }
-        
-        .progress-bar-container {
-            position: relative;
-            width: 100%;
-            height: 80px;
-            background: #1e3a5f;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(30, 58, 95, 0.3);
-        }
-        
-        /* Speed Lines - Moving RIGHT TO LEFT (behind the car) */
-        .speed-line {
-            position: absolute;
-            right: 0;
-            height: 4px;
-            border-radius: 2px;
-            animation: speedLineBackward 1.5s linear infinite;
-        }
-        
-        .speed-line:nth-child(1) {
-            top: 25%;
-            width: 100px;
-            background: linear-gradient(to left, transparent, #fbbf24, transparent);
-            animation-delay: 0s;
-        }
-        
-        .speed-line:nth-child(2) {
-            top: 40%;
-            width: 80px;
-            background: linear-gradient(to left, transparent, #f59e0b, transparent);
-            animation-delay: 0.2s;
-        }
-        
-        .speed-line:nth-child(3) {
-            top: 55%;
-            width: 120px;
-            background: linear-gradient(to left, transparent, #ea580c, transparent);
-            animation-delay: 0.4s;
-        }
-        
-        .speed-line:nth-child(4) {
-            top: 70%;
-            width: 90px;
-            background: linear-gradient(to left, transparent, #dc2626, transparent);
-            animation-delay: 0.6s;
-        }
-        
-        @keyframes speedLineBackward {
-            0% {
-                transform: translateX(150px);
-                opacity: 0;
-            }
-            20% {
-                opacity: 1;
-            }
-            80% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(calc(-100% - 150px));
-                opacity: 0;
-            }
-        }
-        
-        /* Progress Fill */
-        .progress-fill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 6px;
-            background: linear-gradient(to right, #3b82f6, #06b6d4);
-            border-radius: 3px;
-            transition: width 1s ease-out;
-            z-index: 2;
-        }
-        
-        /* Car - Facing RIGHT */
-        .progress-car {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%) translateX(-50%);
-            transition: left 1s ease-out;
-            z-index: 10;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
-        }
-        
-        .car-svg {
-            width: 80px;
-            height: auto;
-        }
-        
-        /* Car Design - Flipped to face RIGHT */
-        .car-body-main {
-            fill: #e5e7eb;
-        }
-        
-        .car-window {
-            fill: #60a5fa;
-            opacity: 0.7;
-        }
-        
-        .car-wheel {
-            fill: #1f2937;
-            animation: wheelSpin 0.6s linear infinite;
-        }
-        
-        @keyframes wheelSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .car-detail {
-            fill: #9ca3af;
-        }
-        
-        /* Milestone Labels */
-        .milestone-labels {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding: 0 10px;
-        }
-        
-        .milestone-label {
-            font-size: 12px;
-            color: #475569;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .milestone-date {
-            display: block;
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 500;
-            margin-top: 3px;
-        }
-        
-        /* Progress Info */
-        .progress-info {
-            text-align: center;
-            margin-top: 25px;
-        }
-        
-        .progress-percentage {
-            font-size: 36px;
-            font-weight: 700;
-            color: #1e3a5f;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .progress-text {
-            font-size: 13px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 5px;
-        }
-        
-        footer {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px);
-            padding: 60px 20px 80px;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            text-align: center;
-        }
-        
-        footer h3 {
-            color: #2d3748;
-            font-size: 20px;
-            font-weight: 400;
-            margin-bottom: 50px;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        
-        .footer-countdown {
-            display: flex;
-            justify-content: center;
-            align-items: stretch;
-            gap: 30px;
-            flex-wrap: wrap;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        
-        .total-time-unit {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 50px 40px;
-            flex: 1;
-            min-width: 250px;
-            max-width: 320px;
-            min-height: 180px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            transition: all 0.4s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .total-time-unit:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .total-time-number {
-            font-size: 52px;
-            font-weight: 300;
-            color: #2d3748;
-            margin: 0;
-            line-height: 1.3;
-            text-align: center;
-            font-family: 'Courier New', monospace;
-            white-space: nowrap;
-            overflow: visible;
-        }
-        
-        .total-time-label {
-            font-size: 11px;
-            color: #718096;
-            margin-top: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-            text-align: center;
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-        
-        /* Tablet Responsive */
-        @media (max-width: 992px) {
-            h1 {
-                font-size: 28px;
-                letter-spacing: 4px;
-            }
-            
-            .current-date {
-                font-size: 15px;
-                margin-bottom: 50px;
-            }
-            
-            .circle-container {
-                width: 140px;
-                height: 140px;
-            }
-            
-            .time-number {
-                font-size: 50px;
-            }
-            
-            .journey-title {
-                font-size: 16px;
-            }
-            
-            .progress-percentage {
-                font-size: 38px;
-            }
-            
-            .total-time-number {
-                font-size: 46px;
-            }
-            
-            .total-time-unit {
-                padding: 45px 35px;
-                min-width: 220px;
-            }
-        }
-        
-        /* Mobile Responsive - MUCH LARGER SIZES */
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 40px 15px;
-            }
-            
-            h1 {
-                font-size: 28px;
-                letter-spacing: 3px;
-                margin-bottom: 18px;
-            }
-            
-            .current-date {
-                font-size: 16px;
-                margin-bottom: 45px;
-            }
-            
-            .countdown-container {
-                margin-bottom: 60px;
-            }
-            
-            .countdown {
-                gap: 35px;
-            }
-            
-            /* MUCH LARGER circles on mobile */
-            .circle-container {
-                width: 160px;
-                height: 160px;
-            }
-            
-            /* MUCH LARGER numbers on mobile */
-            .time-number {
-                font-size: 60px;
-                font-weight: 400;
-            }
-            
-            /* MUCH LARGER labels on mobile */
-            .time-label {
-                font-size: 15px;
-                letter-spacing: 2.5px;
-                font-weight: 700;
-            }
-            
-            .journey-container {
-                padding: 0 15px;
-                margin: 60px auto 60px;
-            }
-            
-            .journey-title {
-                font-size: 18px;
-                margin-bottom: 30px;
-                letter-spacing: 2.5px;
-            }
-            
-            /* LARGER progress bar on mobile */
-            .progress-bar-container {
-                height: 80px;
-            }
-            
-            /* LARGER car on mobile */
-            .car-svg {
-                width: 80px;
-            }
-            
-            /* LARGER milestone labels on mobile */
-            .milestone-label {
-                font-size: 13px;
-                font-weight: 700;
-            }
-            
-            .milestone-date {
-                font-size: 12px;
-            }
-            
-            /* MUCH LARGER progress percentage on mobile */
-            .progress-percentage {
-                font-size: 56px;
-                font-weight: 800;
-                margin-top: 10px;
-            }
-            
-            .progress-text {
-                font-size: 14px;
-                letter-spacing: 2.5px;
-                margin-top: 8px;
-            }
-            
-            footer {
-                padding: 60px 15px 70px;
-            }
-            
-            /* LARGER footer title on mobile */
-            footer h3 {
-                font-size: 20px;
-                margin-bottom: 45px;
-                letter-spacing: 3px;
-            }
-            
-            .footer-countdown {
-                gap: 25px;
-            }
-            
-            /* MUCH LARGER footer boxes on mobile */
-            .total-time-unit {
-                min-width: 300px;
-                max-width: 100%;
-                padding: 50px 35px;
-                min-height: 190px;
-            }
-            
-            /* MUCH LARGER footer numbers on mobile */
-            .total-time-number {
-                font-size: 56px;
-                font-weight: 400;
-            }
-            
-            /* LARGER footer labels on mobile */
-            .total-time-label {
-                font-size: 13px;
-                margin-top: 20px;
-                letter-spacing: 2.5px;
-                font-weight: 700;
-            }
-        }
-        
-        /* Extra Small Mobile - Still Large */
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 24px;
-                letter-spacing: 2px;
-            }
-            
-            .current-date {
-                font-size: 15px;
-            }
-            
-            .countdown {
-                gap: 30px;
-            }
-            
-            /* Keep LARGE on small screens */
-            .circle-container {
-                width: 150px;
-                height: 150px;
-            }
-            
-            .time-number {
-                font-size: 56px;
-            }
-            
-            .time-label {
-                font-size: 14px;
-            }
-            
-            .journey-title {
-                font-size: 17px;
-            }
-            
-            .progress-bar-container {
-                height: 75px;
-            }
-            
-            .car-svg {
-                width: 75px;
-            }
-            
-            .milestone-label {
-                font-size: 12px;
-            }
-            
-            .milestone-date {
-                font-size: 11px;
-            }
-            
-            /* Keep progress percentage LARGE */
-            .progress-percentage {
-                font-size: 52px;
-            }
-            
-            .progress-text {
-                font-size: 13px;
-            }
-            
-            footer h3 {
-                font-size: 18px;
-            }
-            
-            /* Keep footer boxes LARGE */
-            .total-time-unit {
-                min-width: 280px;
-                padding: 48px 30px;
-                min-height: 180px;
-            }
-            
-            .total-time-number {
-                font-size: 52px;
-            }
-            
-            .total-time-label {
-                font-size: 12px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="main-content">
         <h1>I am Coming....</h1>
         <div class="current-date" id="currentDate">January 26, 2026</div>
-        
+
+        <!-- Countdown Timer Section -->
         <div class="countdown-container">
             <div class="countdown">
+                <!-- Months -->
                 <div class="time-unit">
                     <div class="circle-container">
                         <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
-                            <circle class="circle-progress" id="monthsCircle" cx="80" cy="80" r="72" 
-                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                            <circle class="circle-progress" id="monthsCircle" cx="80" cy="80" r="72"
+                                stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
                         </svg>
-                        <div class="time-number" id="months">0</div>
+                        <div class="time-number" id="months">00</div>
                     </div>
                     <div class="time-label">Months</div>
                 </div>
-                
+
+                <!-- Days -->
                 <div class="time-unit">
                     <div class="circle-container">
                         <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
-                            <circle class="circle-progress" id="daysCircle" cx="80" cy="80" r="72" 
-                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                            <circle class="circle-progress" id="daysCircle" cx="80" cy="80" r="72"
+                                stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
                         </svg>
-                        <div class="time-number" id="days">0</div>
+                        <div class="time-number" id="days">00</div>
                     </div>
                     <div class="time-label">Days</div>
                 </div>
-                
+
+                <!-- Hours -->
                 <div class="time-unit">
                     <div class="circle-container">
                         <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
-                            <circle class="circle-progress" id="hoursCircle" cx="80" cy="80" r="72" 
-                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                            <circle class="circle-progress" id="hoursCircle" cx="80" cy="80" r="72"
+                                stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
                         </svg>
-                        <div class="time-number" id="hours">0</div>
+                        <div class="time-number" id="hours">00</div>
                     </div>
                     <div class="time-label">Hours</div>
                 </div>
-                
+
+                <!-- Minutes -->
                 <div class="time-unit">
                     <div class="circle-container">
                         <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
-                            <circle class="circle-progress" id="minutesCircle" cx="80" cy="80" r="72" 
-                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                            <circle class="circle-progress" id="minutesCircle" cx="80" cy="80" r="72"
+                                stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
                         </svg>
-                        <div class="time-number" id="minutes">0</div>
+                        <div class="time-number" id="minutes">00</div>
                     </div>
                     <div class="time-label">Minutes</div>
                 </div>
-                
+
+                <!-- Seconds -->
                 <div class="time-unit">
                     <div class="circle-container">
                         <svg width="160" height="160" viewBox="0 0 160 160">
                             <circle class="circle-bg" cx="80" cy="80" r="72"></circle>
-                            <circle class="circle-progress" id="secondsCircle" cx="80" cy="80" r="72" 
-                                    stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
+                            <circle class="circle-progress" id="secondsCircle" cx="80" cy="80" r="72"
+                                stroke-dasharray="452.39" stroke-dashoffset="0"></circle>
                         </svg>
-                        <div class="time-number" id="seconds">0</div>
+                        <div class="time-number" id="seconds">00</div>
                     </div>
                     <div class="time-label">Seconds</div>
                 </div>
             </div>
         </div>
-        
-        <!-- Journey Progress -->
+
+        <!-- Journey Progress Section -->
         <div class="journey-container">
             <div class="journey-title">Journey Progress</div>
-            
+
             <div class="progress-bar-container">
-                <!-- Animated Speed Lines - Moving RIGHT TO LEFT -->
-                <div class="speed-line"></div>
-                <div class="speed-line"></div>
-                <div class="speed-line"></div>
-                <div class="speed-line"></div>
-                
-                <!-- Progress Fill -->
-                <div class="progress-fill" id="progressFill"></div>
-                
-                <!-- Car Facing RIGHT -->
+                <!-- Speed Lines Animation -->
+                <div class="speed-lines">
+                    <div class="speed-line"></div>
+                    <div class="speed-line"></div>
+                    <div class="speed-line"></div>
+                    <div class="speed-line"></div>
+                    <div class="speed-line"></div>
+                    <div class="speed-line"></div>
+                </div>
+
+                <!-- Progress Track -->
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <!-- Car Icon with Total Remaining Seconds Counter -->
                 <div class="progress-car" id="progressCar">
-                    <svg class="car-svg" viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Car Body (facing right) -->
-                        <rect class="car-body-main" x="10" y="25" width="80" height="18" rx="4"/>
-                        <!-- Car Roof (facing right) -->
-                        <path class="car-body-main" d="M 28 25 L 35 12 L 60 12 L 70 25 Z"/>
-                        <!-- Windshield (facing right) -->
-                        <path class="car-window" d="M 37 14 L 32 25 L 52 25 L 58 14 Z"/>
-                        <!-- Side Windows -->
-                        <rect class="car-window" x="15" y="28" width="12" height="10" rx="1"/>
-                        <rect class="car-window" x="73" y="28" width="12" height="10" rx="1"/>
-                        <!-- Front bumper detail (right side) -->
-                        <rect class="car-detail" x="85" y="30" width="5" height="8" rx="1"/>
-                        <!-- Back bumper detail (left side) -->
-                        <rect class="car-detail" x="10" y="30" width="5" height="8" rx="1"/>
-                        <!-- Back Wheels (left) -->
-                        <g class="car-wheel" transform-origin="25 43">
-                            <circle cx="25" cy="43" r="7" fill="#1f2937"/>
-                            <circle cx="25" cy="43" r="4" fill="#4b5563"/>
-                            <circle cx="25" cy="43" r="2" fill="#6b7280"/>
-                        </g>
-                        <!-- Front Wheels (right) -->
-                        <g class="car-wheel" transform-origin="75 43">
-                            <circle cx="75" cy="43" r="7" fill="#1f2937"/>
-                            <circle cx="75" cy="43" r="4" fill="#4b5563"/>
-                            <circle cx="75" cy="43" r="2" fill="#6b7280"/>
-                        </g>
-                        <!-- Headlight (front/right) -->
-                        <circle cx="88" cy="34" r="2" fill="#fef08a" opacity="0.9"/>
-                        <!-- Taillight (back/left) -->
-                        <circle cx="12" cy="34" r="2" fill="#ef4444" opacity="0.8"/>
+                    <div class="car-seconds" id="carSeconds">0</div>
+                    <svg class="car-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M19 17H21V13.5L19 8H5L3 13.5V17H5M19 17C19 18.1046 18.1046 19 17 19C15.8954 19 15 18.1046 15 17M19 17C19 15.8954 18.1046 15 17 15C15.8954 15 15 15.8954 15 17M5 17C5 18.1046 5.89543 19 7 19C8.10457 19 9 18.1046 9 17M5 17C5 15.8954 5.89543 15 7 15C8.10457 15 9 15.8954 9 17M15 17H9"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M5.5 8L7 4H17L18.5 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
                     </svg>
                 </div>
+
+                <!-- Start Marker -->
+                <div class="milestone-marker start-marker"></div>
+
+                <!-- End Marker with 0 -->
+                <div class="milestone-marker end-marker">
+                    <div class="marker-seconds end-seconds">0</div>
+                </div>
             </div>
-            
+
+            <!-- Milestone Labels -->
             <div class="milestone-labels">
                 <span class="milestone-label">
                     Start
@@ -768,10 +136,10 @@
                 </span>
                 <span class="milestone-label">
                     Goal
-                    <span class="milestone-date">Days</span>
                 </span>
             </div>
-            
+
+            <!-- Progress Info -->
             <div class="progress-info">
                 <div class="progress-percentage" id="progressPercent">0%</div>
                 <div class="progress-text">Journey Complete</div>
@@ -779,6 +147,7 @@
         </div>
     </div>
 
+    <!-- Footer Section -->
     <footer>
         <h3>Total Time Remaining</h3>
         <div class="footer-countdown">
@@ -797,97 +166,9 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const circumference = 2 * Math.PI * 72;
-        
-        function formatDate(date) {
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-        
-        function formatShortDate(date) {
-            const options = { year: 'numeric', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-        
-        function updateCircle(elementId, current, max) {
-            const circle = document.getElementById(elementId);
-            const progress = current / max;
-            const offset = circumference * (1 - progress);
-            circle.style.strokeDashoffset = offset;
-        }
-        
-        function updateProgress(progressPercent) {
-            const car = document.getElementById('progressCar');
-            const fill = document.getElementById('progressFill');
-            const percentDisplay = document.getElementById('progressPercent');
-            
-            // Update car position
-            car.style.left = progressPercent + '%';
-            
-            // Update progress fill
-            fill.style.width = progressPercent + '%';
-            
-            // Update percentage display
-            percentDisplay.textContent = Math.round(progressPercent) + '%';
-        }
-        
-        function updateCountdown() {
-            const now = new Date();
-            const targetDate = new Date('May 1, 2026 00:00:00').getTime();
-            const startDate = now.getTime();
-            const difference = targetDate - now.getTime();
-            
-            // Update current date display
-            document.getElementById('currentDate').textContent = formatDate(now);
-            document.getElementById('startDate').textContent = formatShortDate(now);
-            
-            if (difference > 0) {
-                const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30.44));
-                const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-                
-                const totalSeconds = Math.floor(difference / 1000);
-                const totalMinutes = Math.floor(difference / (1000 * 60));
-                const totalHours = Math.floor(difference / (1000 * 60 * 60));
-                
-                // Calculate progress (from Jan 26, 2026 to May 1, 2026)
-                const journeyStart = new Date('January 26, 2026 00:00:00').getTime();
-                const totalDuration = targetDate - journeyStart;
-                const elapsed = now.getTime() - journeyStart;
-                const progressPercent = Math.max(0, Math.min(100, (elapsed / totalDuration) * 100));
-                
-                // Update countdown numbers
-                document.getElementById('months').textContent = String(months).padStart(2, '0');
-                document.getElementById('days').textContent = String(days).padStart(2, '0');
-                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
-                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
-                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
-                
-                // Update circles
-                updateCircle('monthsCircle', months, 12);
-                updateCircle('daysCircle', days, 30);
-                updateCircle('hoursCircle', hours, 24);
-                updateCircle('minutesCircle', minutes, 60);
-                updateCircle('secondsCircle', seconds, 60);
-                
-                // Update progress
-                updateProgress(progressPercent);
-                
-                // Update footer
-                document.getElementById('totalHours').textContent = totalHours.toLocaleString();
-                document.getElementById('totalMinutes').textContent = totalMinutes.toLocaleString();
-                document.getElementById('totalSeconds').textContent = totalSeconds.toLocaleString();
-            } else {
-                updateProgress(100);
-            }
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-    </script>
+    <script src="script.js"></script>
 </body>
+
 </html>
