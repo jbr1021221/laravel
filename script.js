@@ -235,6 +235,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialize YouTube subscriber progress
     updateYouTubeProgress();
+
+    // Show Birthday Modal
+    const birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
+    birthdayModal.show();
 });
 
 /**
