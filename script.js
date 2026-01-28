@@ -224,4 +224,31 @@ function updateElement(elementId, value) {
 document.addEventListener('DOMContentLoaded', function () {
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // Birthday Modal Close Functionality
+    const modal = document.getElementById('birthdayModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    // Close modal when clicking the X button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+            modal.classList.add('hidden');
+        });
+    }
+
+    // Close modal when clicking outside (on the overlay)
+    if (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+        }
+    });
 });
