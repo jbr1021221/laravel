@@ -8,6 +8,14 @@ const CIRCUMFERENCE = 2 * Math.PI * 72;
 const TARGET_DATE = new Date('May 1, 2026 00:00:00').getTime();
 const JOURNEY_START = new Date('January 26, 2026 00:00:00').getTime();
 
+// =====================================================
+// YOUTUBE API SETTINGS - REAL-TIME DATA!
+// =====================================================
+const YOUTUBE_API_KEY = 'AIzaSyDMEhpuiMn1zj9QAn2DgcTKzZDf_0xKPpo';
+const YOUTUBE_CHANNEL_ID = 'UC_4-9w-BOmQlw3KvPtqmdEA';
+const YOUTUBE_GOAL_SUBS = 50000;  // <-- UPDATE THIS with your goal
+const YOUTUBE_FALLBACK_SUBS = 36900;  // Fallback if API fails
+
 /**
  * Format date to long format (e.g., "January 26, 2026")
  * @param {Date} date - The date to format
@@ -225,30 +233,89 @@ document.addEventListener('DOMContentLoaded', function () {
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // Birthday Modal Close Functionality
-    const modal = document.getElementById('birthdayModal');
-    const closeBtn = document.getElementById('closeModalBtn');
-
-    // Close modal when clicking the X button
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function () {
-            modal.classList.add('hidden');
-        });
-    }
-
-    // Close modal when clicking outside (on the overlay)
-    if (modal) {
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    }
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-            modal.classList.add('hidden');
-        }
-    });
+    // Initialize YouTube subscriber progress
+    updateYouTubeProgress();
 });
+
+/**
+ * Fetch and update YouTube subscriber progress display
+ * Uses YouTube Data API v3 for real-time data
+ */
+async function updateYouTubeProgress() {
+    const goalSubs = YOUTUBE_GOAL_SUBS;
+    let currentSubs = YOUTUBE_FALLBACK_SUBS;
+    let isLive = false;
+
+    // Show loading state
+    const currentSubsEl = document.getElementById('currentSubs');
+    const liveIndicator = document.getElementById('liveIndicator');
+
+    if (currentSubsEl) {
+        currentSubsEl.innerHTML = '<span style="opacity: 0.5;">Loading...</span>';
+    }
+
+    try {
+        // Fetch real-time data from YouTube API
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${YOUTUBE_CHANNEL_ID}&key=${YOUTUBE_API_KEY}`
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.items && data.items.length > 0) {
+                currentSubs = parseInt(data.items[0].statistics.subscriberCount, 10);
+                isLive = true;
+                console.log('✅ YouTube API: Live subscriber count fetched:', currentSubs);
+            }
+        } else {
+            console.warn('⚠️ YouTube API: Using fallback value. Status:', response.status);
+        }
+    } catch (error) {
+        console.warn('⚠️ YouTube API: Using fallback value. Error:', error.message);
+    }
+
+    // Update live indicator
+    if (liveIndicator) {
+        if (isLive) {
+            liveIndicator.classList.add('active');
+        } else {
+            liveIndicator.classList.remove('active');
+        }
+    }
+
+    // Calculate values
+    const remaining = Math.max(0, goalSubs - currentSubs);
+    const progressPercent = Math.min(100, (currentSubs / goalSubs) * 100);
+
+    // Update stat cards
+    updateElement('currentSubs', currentSubs.toLocaleString());
+    updateElement('goalSubs', goalSubs.toLocaleString());
+    updateElement('remainingSubs', remaining.toLocaleString());
+
+    // Update progress bar with animation
+    const progressFill = document.getElementById('ytProgressFill');
+    if (progressFill) {
+        // Small delay for smooth animation
+        setTimeout(() => {
+            progressFill.style.width = progressPercent + '%';
+        }, 100);
+    }
+
+    // Update progress percentage display
+    updateElement('ytProgressPercent', progressPercent.toFixed(1) + '%');
+
+    // Update goal label with formatted number
+    const goalLabel = document.getElementById('ytGoalLabel');
+    if (goalLabel) {
+        if (goalSubs >= 1000000) {
+            goalLabel.textContent = (goalSubs / 1000000).toFixed(1) + 'M';
+        } else if (goalSubs >= 1000) {
+            goalLabel.textContent = (goalSubs / 1000).toFixed(0) + 'K';
+        } else {
+            goalLabel.textContent = goalSubs.toString();
+        }
+    }
+}
+
+// Auto-refresh YouTube stats every 5 minutes
+setInterval(updateYouTubeProgress, 5 * 60 * 1000);
