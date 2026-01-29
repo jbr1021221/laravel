@@ -1405,3 +1405,630 @@ footer h3 {
         transform: translateY(-10px);
     }
 }
+
+/* ====================================
+   Settings Button & Modal Styles
+   ==================================== */
+
+/* Floating Settings Button */
+.settings-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: settingsIntro 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.settings-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 12px 32px rgba(102, 126, 234, 0.6);
+}
+
+.settings-btn:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+.settings-btn svg {
+    width: 24px;
+    height: 24px;
+    color: white;
+}
+
+@keyframes settingsIntro {
+    0% {
+        transform: scale(0) rotate(-180deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* Settings Modal */
+.settings-modal-content {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.settings-modal-content .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+    padding: 25px 30px;
+}
+
+.settings-modal-content .modal-title {
+    font-size: 24px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.settings-modal-content .btn-close {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+}
+
+.settings-modal-content .btn-close:hover {
+    opacity: 1;
+}
+
+.settings-modal-content .modal-body {
+    padding: 30px;
+    background: #f8f9fa;
+}
+
+/* Event Form Container */
+.event-form-container {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.event-form-container h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control::placeholder {
+    color: #a0aec0;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.form-actions .btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-actions .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    flex: 1;
+}
+
+.form-actions .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.form-actions .btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.form-actions .btn-secondary:hover {
+    background: #cbd5e0;
+}
+
+/* Events List Container */
+.events-list-container {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.events-list-container h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-events {
+    text-align: center;
+    color: #a0aec0;
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+/* Event Card */
+.event-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.event-card:hover {
+    border-color: #667eea;
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.event-card-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.event-icon {
+    font-size: 32px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-details {
+    flex: 1;
+}
+
+.event-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 4px;
+}
+
+.event-type {
+    font-size: 12px;
+    color: #718096;
+    text-transform: capitalize;
+}
+
+.event-date {
+    font-size: 13px;
+    color: #4a5568;
+    font-weight: 500;
+    background: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    margin-right: 12px;
+}
+
+.event-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.event-actions button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.event-actions .btn-edit {
+    background: #3b82f6;
+    color: white;
+}
+
+.event-actions .btn-edit:hover {
+    background: #2563eb;
+    transform: scale(1.1);
+}
+
+.event-actions .btn-delete {
+    background: #ef4444;
+    color: white;
+}
+
+.event-actions .btn-delete:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+.event-actions svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Celebration Modal (Dynamic) */
+.celebration-modal-content {
+    border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ====================================
+   Password Protection Styles
+   ==================================== */
+
+/* Password Modal */
+.password-modal-content {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.password-modal-content .modal-header {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border-bottom: none;
+    padding: 20px 25px;
+}
+
+.password-modal-content .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.password-modal-content .modal-body {
+    padding: 30px;
+}
+
+.password-prompt-text {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .form-control {
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 6px;
+}
+
+.password-toggle:hover {
+    background: #f1f5f9;
+}
+
+.password-toggle svg {
+    width: 20px;
+    height: 20px;
+    color: #94a3b8;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover svg {
+    color: #475569;
+}
+
+/* Password Error */
+.password-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fef2f2;
+    border-radius: 8px;
+    border-left: 3px solid #ef4444;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Password Hint */
+.password-hint {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #3b82f6;
+}
+
+.password-hint code {
+    background: #e0e7ff;
+    color: #4338ca;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 4px;
+}
+
+/* Change Password Container */
+.password-change-container {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid #fef2f2;
+}
+
+.password-change-container h4 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.password-change-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-change-password {
+    width: 100%;
+}
+
+/* ====================================
+   Toggle Switch for Event Active/Inactive
+   ==================================== */
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    border-radius: 24px;
+    transition: all 0.3s ease;
+}
+
+.toggle-slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.toggle-switch input:checked+.toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.toggle-switch:hover .toggle-slider {
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+/* Inactive Event Styling */
+.event-card.event-inactive {
+    opacity: 0.5;
+    filter: grayscale(70%);
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+}
+
+.event-card.event-inactive .event-card-icon {
+    opacity: 0.6;
+}
+
+.event-card.event-inactive .event-card-info h5 {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.event-card.event-inactive .event-card-info p {
+    color: #cbd5e1;
+}
+
+.event-card.event-inactive .event-card-date {
+    color: #cbd5e1;
+}
+
+/* Mobile Responsiveness */
+
+@media (max-width: 768px) {
+    .settings-btn {
+        width: 50px;
+        height: 50px;
+        top: 20px;
+        right: 20px;
+    }
+
+    .settings-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .settings-modal-content .modal-body {
+        padding: 20px;
+    }
+
+    .event-form-container,
+    .events-list-container {
+        padding: 20px;
+    }
+
+    .event-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .event-card-info {
+        width: 100%;
+    }
+
+    .event-date {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+}

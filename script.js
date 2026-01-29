@@ -228,18 +228,501 @@ function updateElement(elementId, value) {
     }
 }
 
-// Initialize countdown and start interval
-document.addEventListener('DOMContentLoaded', function () {
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+// =====================================================
+// EVENT MANAGEMENT SYSTEM
+// =====================================================
 
-    // Initialize YouTube subscriber progress
-    updateYouTubeProgress();
+// Global variable to store events
+let customEvents = [];
+let currentEditingEventId = null;
 
-    // Show Birthday Modal
-    const birthdayModal = new bootstrap.Modal(document.getElementById('birthdayModal'));
-    birthdayModal.show();
-});
+/**
+ * Initialize the event management system
+ */
+function initializeEventSystem() {
+    // Load events from localStorage
+    loadCustomEvents();
+
+    // Set up event listeners
+    setupEventListeners();
+
+    // Render events list
+    renderEventsList();
+
+    // Check if we should show any celebration modals
+    checkAndShowCelebrations();
+}
+
+/**
+ * Load custom events from localStorage
+ */
+function loadCustomEvents() {
+    const storedEvents = localStorage.getItem('customEvents');
+    if (storedEvents) {
+        customEvents = JSON.parse(storedEvents);
+    }
+}
+
+/**
+ * Set up all event listeners for the settings system
+ */
+function setupEventListeners() {
+    const settingsBtn = document.getElementById('settingsBtn');
+    const eventForm = document.getElementById('eventForm');
+    const eventTypeSelect = document.getElementById('eventType');
+    const cancelBtn = document.getElementById('cancelEventBtn');
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const passwordInput = document.getElementById('passwordInput');
+    const changePasswordForm = document.getElementById('changePasswordForm');
+
+    // Open password modal when settings button is clicked
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', function () {
+            const passwordModal = new bootstrap.Modal(document.getElementById('passwordModal'));
+            passwordModal.show();
+            // Clear password input and error
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+        });
+    }
+
+    // Password form submission
+    if (passwordForm) {
+        passwordForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            verifyPassword();
+        });
+    }
+
+    // Password toggle (show/hide)
+    if (passwordToggle && passwordInput) {
+        passwordToggle.addEventListener('click', function () {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+
+            // Update icon
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (type === 'text') {
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        });
+    }
+
+    // Event type change - show/hide custom message field
+    if (eventTypeSelect) {
+        eventTypeSelect.addEventListener('change', function () {
+            const customMessageGroup = document.getElementById('customMessageGroup');
+            if (this.value === 'custom') {
+                customMessageGroup.style.display = 'block';
+            } else {
+                customMessageGroup.style.display = 'none';
+            }
+        });
+    }
+
+    // Form submission
+    if (eventForm) {
+        eventForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            saveEvent();
+        });
+    }
+
+    // Cancel button
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+            resetForm();
+        });
+    }
+
+    // Change password form submission
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            changePassword();
+        });
+    }
+
+    // Fix celebration modal scroll issue
+    const celebrationBtn = document.getElementById('celebrationBtn');
+    if (celebrationBtn) {
+        celebrationBtn.addEventListener('click', function () {
+            closeCelebrationModal();
+        });
+    }
+
+    // Also fix when modal is closed via backdrop or ESC key
+    const celebrationModalEl = document.getElementById('celebrationModal');
+    if (celebrationModalEl) {
+        celebrationModalEl.addEventListener('hidden.bs.modal', function () {
+            restoreBodyScroll();
+        });
+    }
+}
+
+/**
+ * Properly close celebration modal and restore scroll
+ */
+function closeCelebrationModal() {
+    const celebrationModal = bootstrap.Modal.getInstance(document.getElementById('celebrationModal'));
+    if (celebrationModal) {
+        celebrationModal.hide();
+    }
+    restoreBodyScroll();
+}
+
+/**
+ * Restore body scroll after modal close
+ */
+function restoreBodyScroll() {
+    // Remove modal-open class
+    document.body.classList.remove('modal-open');
+
+    // Remove padding-right that Bootstrap adds
+    document.body.style.paddingRight = '';
+    document.body.style.overflow = '';
+
+    // Remove any leftover backdrops
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => backdrop.remove());
+}
+
+/**
+ * Get the stored password (default: admin123)
+ */
+function getStoredPassword() {
+    const storedPassword = localStorage.getItem('settingsPassword');
+    return storedPassword || 'admin123';
+}
+
+/**
+ * Verify the entered password
+ */
+function verifyPassword() {
+    const enteredPassword = document.getElementById('passwordInput').value;
+    const storedPassword = getStoredPassword();
+    const passwordError = document.getElementById('passwordError');
+
+    if (enteredPassword === storedPassword) {
+        // Password correct - hide password modal and show settings modal
+        const passwordModal = bootstrap.Modal.getInstance(document.getElementById('passwordModal'));
+        passwordModal.hide();
+
+        // Show settings modal
+        setTimeout(() => {
+            const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+            settingsModal.show();
+        }, 300);
+    } else {
+        // Password incorrect - show error
+        passwordError.style.display = 'flex';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+/**
+ * Change the password
+ */
+function changePassword() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const storedPassword = getStoredPassword();
+
+    // Validate current password
+    if (currentPassword !== storedPassword) {
+        alert('Current password is incorrect!');
+        return;
+    }
+
+    // Validate new password length
+    if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters long!');
+        return;
+    }
+
+    // Validate password match
+    if (newPassword !== confirmPassword) {
+        alert('New passwords do not match!');
+        return;
+    }
+
+    // Save new password
+    localStorage.setItem('settingsPassword', newPassword);
+
+    // Clear form and show success
+    document.getElementById('changePasswordForm').reset();
+    alert('Password changed successfully! ✓');
+}
+
+/**
+ * Save or update an event
+ */
+function saveEvent() {
+    const name = document.getElementById('eventName').value.trim();
+    const type = document.getElementById('eventType').value;
+    const date = document.getElementById('eventDate').value;
+    const customMessage = document.getElementById('customMessage').value.trim();
+
+    if (!name || !type || !date) {
+        alert('Please fill in all required fields!');
+        return;
+    }
+
+    const event = {
+        id: currentEditingEventId || Date.now().toString(),
+        name: name,
+        type: type,
+        date: date,
+        customMessage: customMessage,
+        active: currentEditingEventId ?
+            (customEvents.find(e => e.id === currentEditingEventId)?.active ?? true) :
+            true // New events are active by default
+    };
+
+    if (currentEditingEventId) {
+        // Update existing event
+        const index = customEvents.findIndex(e => e.id === currentEditingEventId);
+        if (index !== -1) {
+            customEvents[index] = event;
+        }
+    } else {
+        // Add new event
+        customEvents.push(event);
+    }
+
+    localStorage.setItem('customEvents', JSON.stringify(customEvents));
+    renderEventsList();
+    resetForm();
+}
+
+/**
+ * Toggle event active status
+ */
+function toggleEventStatus(eventId) {
+    const event = customEvents.find(e => e.id === eventId);
+    if (event) {
+        event.active = !event.active;
+        localStorage.setItem('customEvents', JSON.stringify(customEvents));
+        renderEventsList();
+    }
+}
+
+/**
+ * Render the events list
+ */
+function renderEventsList() {
+    const eventsList = document.getElementById('eventsList');
+
+    if (customEvents.length === 0) {
+        eventsList.innerHTML = '<p class="no-events">No events added yet. Add your first event above!</p>';
+        return;
+    }
+
+    eventsList.innerHTML = customEvents.map(event => {
+        const eventIcon = getEventIcon(event.type);
+        const eventDate = new Date(event.date);
+        const formattedDate = eventDate.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        const isActive = event.active !== false; // Default to true if not set
+        const inactiveClass = isActive ? '' : 'event-inactive';
+
+        return `
+            <div class="event-card ${inactiveClass}">
+                <div class="event-card-icon">${eventIcon}</div>
+                <div class="event-card-info">
+                    <h5>${event.name}</h5>
+                    <p>${getEventTypeLabel(event.type)}</p>
+                </div>
+                <div class="event-card-date">${formattedDate}</div>
+                <div class="event-card-actions">
+                    <label class="toggle-switch" title="${isActive ? 'Active - Click to disable' : 'Inactive - Click to enable'}">
+                        <input type="checkbox" ${isActive ? 'checked' : ''} onchange="toggleEventStatus('${event.id}')">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button class="btn-event-action btn-edit" onclick="editEvent('${event.id}')" title="Edit Event">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+                    <button class="btn-event-action btn-delete" onclick="deleteEvent('${event.id}')" title="Delete Event">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+/**
+ * Edit an event
+ */
+function editEvent(eventId) {
+    const event = customEvents.find(e => e.id === eventId);
+
+    if (!event) return;
+
+    // Set editing mode
+    currentEditingEventId = eventId;
+
+    // Populate form
+    document.getElementById('eventName').value = event.name;
+    document.getElementById('eventType').value = event.type;
+    document.getElementById('eventDate').value = event.date;
+    document.getElementById('customMessage').value = event.customMessage || '';
+
+    // Show/hide custom message field
+    const customMessageGroup = document.getElementById('customMessageGroup');
+    customMessageGroup.style.display = event.type === 'custom' ? 'block' : 'none';
+
+    // Update form title and button
+    document.getElementById('formTitle').textContent = 'Edit Event';
+    document.getElementById('submitEventBtn').innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 5px;">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        Update Event
+    `;
+
+    // Scroll to form
+    document.querySelector('.event-form-container').scrollIntoView({ behavior: 'smooth' });
+}
+
+/**
+ * Delete an event
+ */
+function deleteEvent(eventId) {
+    if (!confirm('Are you sure you want to delete this event?')) {
+        return;
+    }
+
+    customEvents = customEvents.filter(e => e.id !== eventId);
+    localStorage.setItem('customEvents', JSON.stringify(customEvents));
+    renderEventsList();
+}
+
+/**
+ * Reset the event form
+ */
+function resetForm() {
+    currentEditingEventId = null;
+    document.getElementById('eventForm').reset();
+    document.getElementById('formTitle').textContent = 'Add New Event';
+    document.getElementById('customMessageGroup').style.display = 'none';
+    document.getElementById('submitEventBtn').innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; margin-right: 5px;">
+            <path d="M12 5v14m-7-7h14"></path>
+        </svg>
+        Add Event
+    `;
+}
+
+/**
+ * Get event icon based on type
+ */
+function getEventIcon(type) {
+    const icons = {
+        'birthday': '🎂',
+        'anniversary': '💑',
+        'work-anniversary': '💼',
+        'custom': '🎉'
+    };
+    return icons[type] || icons['custom'];
+}
+
+/**
+ * Get event type label
+ */
+function getEventTypeLabel(type) {
+    const labels = {
+        'birthday': 'Birthday',
+        'anniversary': 'Anniversary',
+        'work-anniversary': 'Work Anniversary',
+        'custom': 'Custom'
+    };
+    return labels[type] || 'Custom';
+}
+
+/**
+ * Check if we should show any celebration modals today
+ * Only shows modals for ACTIVE events
+ */
+function checkAndShowCelebrations() {
+    const today = new Date();
+    const todayString = today.toISOString().split('T')[0];
+
+    // Find ACTIVE events that match today's date
+    const todaysEvents = customEvents.filter(event => {
+        const eventDate = new Date(event.date);
+        const eventDateString = eventDate.toISOString().split('T')[0];
+        const isActive = event.active !== false; // Default to true if not set
+        return eventDateString === todayString && isActive;
+    });
+
+    // Show modal for each event (with a delay between each)
+    todaysEvents.forEach((event, index) => {
+        setTimeout(() => {
+            showCelebrationModal(event);
+        }, index * 1000); // 1 second delay between each modal
+    });
+}
+
+/**
+ * Show celebration modal for an event
+ */
+function showCelebrationModal(event) {
+    const icons = {
+        'birthday': '🎂',
+        'anniversary': '💑',
+        'work-anniversary': '💼',
+        'custom': '🎉'
+    };
+
+    const titles = {
+        'birthday': 'Happy Birthday',
+        'anniversary': 'Happy Anniversary',
+        'work-anniversary': 'Work Anniversary',
+        'custom': 'Celebration Time'
+    };
+
+    const defaultMessages = {
+        'birthday': 'Wishing you a spectacular year ahead filled with success and happiness!',
+        'anniversary': 'Celebrating your love and commitment. May your bond grow stronger with each passing year!',
+        'work-anniversary': 'Congratulations on another amazing year! Your dedication and hard work inspire us all!',
+        'custom': 'Today is special! Let\'s celebrate this wonderful occasion together!'
+    };
+
+    // Update modal content
+    document.getElementById('celebrationIcon').textContent = icons[event.type] || icons['custom'];
+    document.getElementById('celebrationTitle').textContent = titles[event.type] || titles['custom'];
+    document.getElementById('celebrationName').textContent = event.name + '!';
+
+    const message = event.customMessage || defaultMessages[event.type] || defaultMessages['custom'];
+    document.getElementById('celebrationMessage').textContent = message;
+
+    // Show modal
+    const celebrationModal = new bootstrap.Modal(document.getElementById('celebrationModal'));
+    celebrationModal.show();
+}
 
 /**
  * Fetch and update YouTube subscriber progress display
@@ -320,6 +803,19 @@ async function updateYouTubeProgress() {
         }
     }
 }
+
+// Initialize countdown and start interval
+document.addEventListener('DOMContentLoaded', function () {
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Initialize YouTube subscriber progress
+    updateYouTubeProgress();
+
+    // COMMENTED OUT - Event Management System disabled
+    // Uncomment the line below to enable password protection, settings button, and event modals
+    // initializeEventSystem();
+});
 
 // Auto-refresh YouTube stats every 5 minutes
 setInterval(updateYouTubeProgress, 5 * 60 * 1000);

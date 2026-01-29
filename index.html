@@ -13,6 +13,16 @@
 </head>
 
 <body>
+    <!-- Settings Button -->
+    <!-- COMMENTED OUT - Uncomment to enable settings
+    <button class="settings-btn" id="settingsBtn" title="Event Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m5.66-13a5 5 0 0 0 0 10m-11.32 0a5 5 0 0 0 0-10m10.51 2.83l-3.54 3.54m0 3.54l3.54 3.54m-10.51-3.54l3.54-3.54m0 3.54l-3.54 3.54"></path>
+        </svg>
+    </button>
+    -->
+
     <div class="main-content">
         <h1>I am Coming....</h1>
         <div class="current-date" id="currentDate">January 26, 2026</div>
@@ -211,58 +221,435 @@
         </div>
     </div>
 
-    <!-- Birthday Modal -->
-    <div class="modal fade" id="birthdayModal" tabindex="-1" aria-hidden="true">
+
+    <!-- Footer Section -->
+    <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+        data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content birthday-modal-content">
-                <div class="modal-body text-center">
-                    <div class="confetti-container">
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                        <div class="confetti"></div>
-                    </div>
-                    <div class="birthday-icon-wrapper">
-                        <span class="birthday-icon">🎂</span>
-                    </div>
-                    <h2 class="birthday-title">Happy Birthday</h2>
-                    <h3 class="birthday-name">Rafid Vai!</h3>
-                    <p class="birthday-message">Wishing you a spectacular year ahead filled with success and happiness!
-                    </p>
-                    <button type="button" class="btn birthday-btn" data-bs-dismiss="modal">Let's Celebrate! 🎉</button>
+            <div class="modal-content password-modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 24px; height: 24px; margin-right: 10px;">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        Enter Password
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="password-prompt-text">Please enter the password to access event settings.</p>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label for="passwordInput">Password</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" class="form-control" id="passwordInput"
+                                    placeholder="Enter password" required autocomplete="off">
+                                <button type="button" class="password-toggle" id="passwordToggle"
+                                    title="Show/Hide Password">
+                                    <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="password-error" id="passwordError" style="display: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 16px; height: 16px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                </svg>
+                                Incorrect password. Please try again.
+                            </div>
+                            <div class="password-hint">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 14px; height: 14px; margin-right: 5px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                Default password: <code>admin123</code> (You can change it in settings)
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="unlockSettingsBtn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 18px; height: 18px; margin-right: 5px;">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                                </svg>
+                                Unlock Settings
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer Section -->
-    <footer>
-        <h3>Total Time Remaining</h3>
-        <div class="footer-countdown">
-            <div class="total-time-unit">
-                <div class="total-time-number" id="totalHours">0</div>
-                <div class="total-time-label">Hours Left</div>
-            </div>
-            <div class="total-time-unit">
-                <div class="total-time-number" id="totalMinutes">0</div>
-                <div class="total-time-label">Minutes Left</div>
-            </div>
-            <div class="total-time-unit">
-                <div class="total-time-number" id="totalSeconds">0</div>
-                <div class="total-time-label">Seconds Left</div>
+    <-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                style="width: 24px; height: 24px; margin-right: 10px;">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M12 1v6m0 6v6m5.66-13a5 5 0 0 0 0 10m-11.32 0a5 5 0 0 0 0-10m10.51 2.83l-3.54 3.54m0 3.54l3.54 3.54m-10.51-3.54l3.54-3.54m0 3.54l-3.54 3.54">
+                                </path>
+                            </svg>
+                            Event Settings
+                        </h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <-- Event Form -->
+                            <div class="event-form-container">
+                                <h4 id="formTitle">Add New Event</h4>
+                                <form id="eventForm">
+                                    <div class="form-group">
+                                        <label for="eventName">Person's Name</label>
+                                        <input type="text" class="form-control" id="eventName"
+                                            placeholder="e.g., John Doe" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="eventType">Event Type</label>
+                                        <select class="form-control" id="eventType" required>
+                                            <option value="">Select event type</option>
+                                            <option value="birthday">Birthday</option>
+                                            <option value="anniversary">Marriage Anniversary</option>
+                                            <option value="work-anniversary">Work Anniversary</option>
+                                            <option value="custom">Custom Celebration</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="eventDate">Event Date</label>
+                                        <input type="date" class="form-control" id="eventDate" required>
+                                    </div>
+
+                                    <div class="form-group" id="customMessageGroup" style="display: none;">
+                                        <label for="customMessage">Custom Message (Optional)</label>
+                                        <textarea class="form-control" id="customMessage" rows="3"
+                                            placeholder="Enter your custom celebration message..."></textarea>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary" id="submitEventBtn">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                style="width: 18px; height: 18px; margin-right: 5px;">
+                                                <path d="M12 5v14m-7-7h14"></path>
+                                            </svg>
+                                            Add Event
+                                        </button>
+                                        <button type="button" class="btn btn-secondary"
+                                            id="cancelEventBtn">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <-- Events List -->
+                                <div class="events-list-container">
+                                    <h4>Your Events</h4>
+                                    <div id="eventsList" class="events-list">
+                                        <p class="no-events">No events added yet. Add your first event above!</p>
+                                    </div>
+                                </div>
+
+                                <-- Change Password Section -->
+                                    <div class="password-change-container">
+                                        <h4>
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                style="width: 20px; height: 20px; margin-right: 8px;">
+                                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                            </svg>
+                                            Change Password
+                                        </h4>
+                                        <form id="changePasswordForm">
+                                            <div class="password-change-grid">
+                                                <div class="form-group">
+                                                    <label for="currentPassword">Current Password</label>
+                                                    <input type="password" class="form-control" id="currentPassword"
+                                                        placeholder="Enter current password" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="newPassword">New Password</label>
+                                                    <input type="password" class="form-control" id="newPassword"
+                                                        placeholder="Enter new password" required minlength="6">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="confirmPassword">Confirm New Password</label>
+                                                    <input type="password" class="form-control" id="confirmPassword"
+                                                        placeholder="Confirm new password" required minlength="6">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary btn-change-password">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2"
+                                                    style="width: 18px; height: 18px; margin-right: 5px;">
+                                                    <path
+                                                        d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z">
+                                                    </path>
+                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                </svg>
+                                                Update Password
+                                            </button>
+                                        </form>
+                                    </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
+        END OF COMMENTED SECTION -->
+
+        <div class="modal fade" id="passwordModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
+            data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content password-modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                style="width: 24px; height: 24px; margin-right: 10px;">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            Enter Password
+                        </h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="password-prompt-text">Please enter the password to access event settings.</p>
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label for="passwordInput">Password</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" class="form-control" id="passwordInput"
+                                        placeholder="Enter password" required autocomplete="off">
+                                    <button type="button" class="password-toggle" id="passwordToggle"
+                                        title="Show/Hide Password">
+                                        <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="password-error" id="passwordError" style="display: none;">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        style="width: 16px; height: 16px;">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                    </svg>
+                                    Incorrect password. Please try again.
+                                </div>
+                                <div class="password-hint">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        style="width: 14px; height: 14px; margin-right: 5px;">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                    </svg>
+                                    Default password: <code>admin123</code> (You can change it in settings)
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="unlockSettingsBtn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        style="width: 18px; height: 18px; margin-right: 5px;">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+                                    </svg>
+                                    Unlock Settings
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content settings-modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                style="width: 28px; height: 28px; margin-right: 10px;">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M12 1v6m0 6v6m0-12a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"></path>
+                            </svg>
+                            Event Settings
+                        </h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Add/Edit Event Form -->
+                        <div class="event-form-container">
+                            <h4 id="formTitle">Add New Event</h4>
+                            <form id="eventForm">
+                                <input type="hidden" id="eventId" value="">
+
+                                <div class="form-group">
+                                    <label for="eventName">Person's Name</label>
+                                    <input type="text" class="form-control" id="eventName" placeholder="e.g., John Doe"
+                                        required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="eventType">Event Type</label>
+                                    <select class="form-control" id="eventType" required>
+                                        <option value="birthday">🎂 Birthday</option>
+                                        <option value="anniversary">💑 Marriage Anniversary</option>
+                                        <option value="work-anniversary">💼 Work Anniversary</option>
+                                        <option value="custom">🎉 Custom Celebration</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="eventDate">Event Date</label>
+                                    <input type="date" class="form-control" id="eventDate" required>
+                                </div>
+
+                                <div class="form-group" id="customMessageGroup" style="display: none;">
+                                    <label for="customMessage">Custom Message (Optional)</label>
+                                    <textarea class="form-control" id="customMessage" rows="3"
+                                        placeholder="Add a personalized message..."></textarea>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary" id="submitEventBtn">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            style="width: 18px; height: 18px; margin-right: 5px;">
+                                            <path d="M12 5v14m-7-7h14"></path>
+                                        </svg>
+                                        Add Event
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="cancelEventBtn">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Events List -->
+                        <div class="events-list-container">
+                            <h4>Your Events</h4>
+                            <div id="eventsList" class="events-list">
+                                <p class="no-events">No events added yet. Add your first event above!</p>
+                            </div>
+                        </div>
+
+                        <!-- Change Password Section -->
+                        <div class="password-change-container">
+                            <h4>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 20px; height: 20px; margin-right: 8px;">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                Change Password
+                            </h4>
+                            <form id="changePasswordForm">
+                                <div class="password-change-grid">
+                                    <div class="form-group">
+                                        <label for="currentPassword">Current Password</label>
+                                        <input type="password" class="form-control" id="currentPassword"
+                                            placeholder="Enter current password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newPassword">New Password</label>
+                                        <input type="password" class="form-control" id="newPassword"
+                                            placeholder="Enter new password" required minlength="6">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="confirmPassword">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirmPassword"
+                                            placeholder="Confirm new password" required minlength="6">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-change-password">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        style="width: 18px; height: 18px; margin-right: 5px;">
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z">
+                                        </path>
+                                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                        <polyline points="7 3 7 8 15 8"></polyline>
+                                    </svg>
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Celebration Modal -->
+        <div class="modal fade" id="celebrationModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content celebration-modal-content">
+                    <div class="modal-body text-center">
+                        <div class="confetti-container">
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                            <div class="confetti"></div>
+                        </div>
+                        <div class="birthday-icon-wrapper">
+                            <span class="birthday-icon" id="celebrationIcon">🎂</span>
+                        </div>
+                        <h2 class="birthday-title" id="celebrationTitle">Happy Birthday</h2>
+                        <h3 class="birthday-name" id="celebrationName">Rafid Vai!</h3>
+                        <p class="birthday-message" id="celebrationMessage">Wishing you a spectacular year ahead filled
+                            with
+                            success and happiness!</p>
+                        <button type="button" class="btn birthday-btn" data-bs-dismiss="modal">Let's Celebrate!
+                            🎉</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Section -->
+
+        <footer>
+            <h3>Total Time Remaining</h3>
+            <div class="footer-countdown">
+                <div class="total-time-unit">
+                    <div class="total-time-number" id="totalHours">0</div>
+                    <div class="total-time-label">Hours Left</div>
+                </div>
+                <div class="total-time-unit">
+                    <div class="total-time-number" id="totalMinutes">0</div>
+                    <div class="total-time-label">Minutes Left</div>
+                </div>
+                <div class="total-time-unit">
+                    <div class="total-time-number" id="totalSeconds">0</div>
+                    <div class="total-time-label">Seconds Left</div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>
