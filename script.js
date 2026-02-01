@@ -63,8 +63,9 @@ function updateProgress(progressPercent, totalRemainingSeconds) {
     const carSeconds = document.getElementById('carSeconds');
     const startSeconds = document.getElementById('startSeconds');
 
-    // Clamp car position between 8% and 92% to keep visible
-    const carPosition = Math.max(8, Math.min(92, progressPercent));
+    // Car indicates PROGRESS (elapsed time), positioned at the end of the blue fill bar
+    // Clamp between 5% and 95% to keep it visible within the container
+    const carPosition = Math.max(5, Math.min(95, progressPercent));
 
     if (car) {
         car.style.left = carPosition + '%';
