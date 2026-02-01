@@ -359,6 +359,90 @@ function getEventIcon(type) { return ({ 'birthday': '🎂', 'anniversary': '💑
 function checkAndShowCelebrations() { /* Simplified */ }
 
 // =====================================================
+// YOUTUBE SUBSCRIBER PROGRESS
+// =====================================================
+
+/**
+ * Fetch and update YouTube subscriber progress display
+ * Uses YouTube Data API v3 for real-time data
+ */
+async function updateYouTubeProgress() {
+    const goalSubs = YOUTUBE_GOAL_SUBS;
+    let currentSubs = YOUTUBE_FALLBACK_SUBS;
+    let isLive = false;
+
+    // Show loading state
+    const currentSubsEl = document.getElementById('currentSubs');
+    const liveIndicator = document.getElementById('liveIndicator');
+
+    if (currentSubsEl) {
+        currentSubsEl.innerHTML = '<span style="opacity: 0.5;">Loading...</span>';
+    }
+
+    try {
+        // Fetch real-time data from YouTube API
+        const response = await fetch(
+            `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${YOUTUBE_CHANNEL_ID}&key=${YOUTUBE_API_KEY}`
+        );
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.items && data.items.length > 0) {
+                currentSubs = parseInt(data.items[0].statistics.subscriberCount, 10);
+                isLive = true;
+                console.log('✅ YouTube API: Live subscriber count fetched:', currentSubs);
+            }
+        } else {
+            console.warn('⚠️ YouTube API: Using fallback value. Status:', response.status);
+        }
+    } catch (error) {
+        console.warn('⚠️ YouTube API: Using fallback value. Error:', error.message);
+    }
+
+    // Update live indicator
+    if (liveIndicator) {
+        if (isLive) {
+            liveIndicator.classList.add('active');
+        } else {
+            liveIndicator.classList.remove('active');
+        }
+    }
+
+    // Calculate values
+    const remaining = Math.max(0, goalSubs - currentSubs);
+    const progressPercent = Math.min(100, (currentSubs / goalSubs) * 100);
+
+    // Update stat cards
+    updateElement('currentSubs', currentSubs.toLocaleString());
+    updateElement('goalSubs', goalSubs.toLocaleString());
+    updateElement('remainingSubs', remaining.toLocaleString());
+
+    // Update progress bar with animation
+    const progressFill = document.getElementById('ytProgressFill');
+    if (progressFill) {
+        // Small delay for smooth animation
+        setTimeout(() => {
+            progressFill.style.width = progressPercent + '%';
+        }, 100);
+    }
+
+    // Update progress percentage display
+    updateElement('ytProgressPercent', progressPercent.toFixed(1) + '%');
+
+    // Update goal label with formatted number
+    const goalLabel = document.getElementById('ytGoalLabel');
+    if (goalLabel) {
+        if (goalSubs >= 1000000) {
+            goalLabel.textContent = (goalSubs / 1000000).toFixed(1) + 'M';
+        } else if (goalSubs >= 1000) {
+            goalLabel.textContent = (goalSubs / 1000).toFixed(0) + 'K';
+        } else {
+            goalLabel.textContent = goalSubs.toString();
+        }
+    }
+}
+
+// =====================================================
 // MAIN EXECUTION
 // =====================================================
 
@@ -366,5 +450,10 @@ function checkAndShowCelebrations() { /* Simplified */ }
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-// 2. Load Firebase in LOCAL BACKGROUND (doesn't block UI)
+// 2. Initialize YouTube subscriber progress
+updateYouTubeProgress();
+// Auto-refresh YouTube stats every 5 minutes
+setInterval(updateYouTubeProgress, 5 * 60 * 1000);
+
+// 3. Load Firebase in LOCAL BACKGROUND (doesn't block UI)
 initializeFirebaseAndEvents();
