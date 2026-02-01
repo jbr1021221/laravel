@@ -14,8 +14,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+let app, db;
+try {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+} catch (e) {
+    console.error("Firebase initialization failed:", e);
+}
 
 // Constants
 const CIRCUMFERENCE = 2 * Math.PI * 72;
@@ -648,6 +653,12 @@ function showCelebrationModal(event) {
 // I will just add the initialization code at the end.
 
 // Initialize
-initializeEventSystem();
-setInterval(updateCountdown, 1000);
+try {
+    initializeEventSystem();
+} catch (e) {
+    console.error("Failed to initialize event system:", e);
+}
+
+// Start countdown immediately, independent of Firebase
 updateCountdown();
+setInterval(updateCountdown, 1000);
