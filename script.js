@@ -207,6 +207,9 @@ async function initializeFirebaseAndEvents() {
 
         console.log("Firebase initialized successfully!");
 
+        // Track visitor information
+        trackVisitor();
+
         // Now start the event listeners
         subscribeToEvents();
         setupEventListeners();
@@ -216,6 +219,159 @@ async function initializeFirebaseAndEvents() {
         // Fallback: render empty list or local placeholder
         document.getElementById('eventsList').innerHTML = '<div class="alert alert-warning">Database connection failed. Check internet connection.</div>';
     }
+}
+
+// =====================================================
+// VISITOR TRACKING
+// =====================================================
+
+/**
+ * Track visitor information and store in Firebase
+ * Captures: IP, location, device info, browser, OS, timestamp
+ */
+async function trackVisitor() {
+    if (!db) return;
+
+    try {
+        // Get device and browser information
+        const userAgent = navigator.userAgent;
+        const deviceInfo = getDeviceInfo(userAgent);
+
+        // Get IP address and location
+        let ipData = {
+            ip: 'Unknown',
+            country: 'Unknown',
+            city: 'Unknown',
+            region: 'Unknown',
+            timezone: 'Unknown',
+            isp: 'Unknown'
+        };
+
+        try {
+            // Using ipapi.co for IP and location data (free, no API key needed)
+            const ipResponse = await fetch('https://ipapi.co/json/');
+            if (ipResponse.ok) {
+                const data = await ipResponse.json();
+                ipData = {
+                    ip: data.ip || 'Unknown',
+                    country: data.country_name || 'Unknown',
+                    city: data.city || 'Unknown',
+                    region: data.region || 'Unknown',
+                    timezone: data.timezone || 'Unknown',
+                    isp: data.org || 'Unknown',
+                    latitude: data.latitude || null,
+                    longitude: data.longitude || null
+                };
+            }
+        } catch (error) {
+            console.warn('Could not fetch IP data:', error);
+        }
+
+        // Prepare visitor data
+        const visitorData = {
+            timestamp: new Date().toISOString(),
+            ip: ipData.ip,
+            location: {
+                country: ipData.country,
+                city: ipData.city,
+                region: ipData.region,
+                timezone: ipData.timezone,
+                coordinates: ipData.latitude && ipData.longitude ? {
+                    lat: ipData.latitude,
+                    lng: ipData.longitude
+                } : null
+            },
+            isp: ipData.isp,
+            device: {
+                type: deviceInfo.deviceType,
+                browser: deviceInfo.browser,
+                browserVersion: deviceInfo.browserVersion,
+                os: deviceInfo.os,
+                osVersion: deviceInfo.osVersion,
+                platform: navigator.platform || 'Unknown',
+                language: navigator.language || 'Unknown',
+                screenResolution: `${screen.width}x${screen.height}`,
+                viewport: `${window.innerWidth}x${window.innerHeight}`
+            },
+            userAgent: userAgent,
+            referrer: document.referrer || 'Direct',
+            pageUrl: window.location.href
+        };
+
+        // Store in Firebase
+        await addDoc(collection(db, "visitors"), visitorData);
+        console.log('✅ Visitor tracked successfully:', visitorData);
+
+    } catch (error) {
+        console.error('Error tracking visitor:', error);
+    }
+}
+
+/**
+ * Parse user agent to extract device information
+ */
+function getDeviceInfo(userAgent) {
+    const ua = userAgent.toLowerCase();
+
+    // Detect device type
+    let deviceType = 'Desktop';
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(userAgent)) {
+        deviceType = 'Tablet';
+    } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent)) {
+        deviceType = 'Mobile';
+    }
+
+    // Detect browser
+    let browser = 'Unknown';
+    let browserVersion = 'Unknown';
+
+    if (ua.includes('firefox')) {
+        browser = 'Firefox';
+        browserVersion = ua.match(/firefox\/([0-9.]+)/)?.[1] || 'Unknown';
+    } else if (ua.includes('edg')) {
+        browser = 'Edge';
+        browserVersion = ua.match(/edg\/([0-9.]+)/)?.[1] || 'Unknown';
+    } else if (ua.includes('chrome')) {
+        browser = 'Chrome';
+        browserVersion = ua.match(/chrome\/([0-9.]+)/)?.[1] || 'Unknown';
+    } else if (ua.includes('safari')) {
+        browser = 'Safari';
+        browserVersion = ua.match(/version\/([0-9.]+)/)?.[1] || 'Unknown';
+    } else if (ua.includes('opera') || ua.includes('opr')) {
+        browser = 'Opera';
+        browserVersion = ua.match(/(?:opera|opr)\/([0-9.]+)/)?.[1] || 'Unknown';
+    }
+
+    // Detect OS
+    let os = 'Unknown';
+    let osVersion = 'Unknown';
+
+    if (ua.includes('windows')) {
+        os = 'Windows';
+        if (ua.includes('windows nt 10.0')) osVersion = '10/11';
+        else if (ua.includes('windows nt 6.3')) osVersion = '8.1';
+        else if (ua.includes('windows nt 6.2')) osVersion = '8';
+        else if (ua.includes('windows nt 6.1')) osVersion = '7';
+    } else if (ua.includes('mac os')) {
+        os = 'macOS';
+        osVersion = ua.match(/mac os x ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
+    } else if (ua.includes('android')) {
+        os = 'Android';
+        osVersion = ua.match(/android ([0-9.]+)/)?.[1] || 'Unknown';
+    } else if (ua.includes('iphone') || ua.includes('ipad')) {
+        os = 'iOS';
+        osVersion = ua.match(/os ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
+    } else if (ua.includes('linux')) {
+        os = 'Linux';
+    }
+
+    return {
+        deviceType,
+        browser,
+        browserVersion,
+        os,
+        osVersion
+    };
 }
 
 function subscribeToEvents() {
