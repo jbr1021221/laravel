@@ -237,34 +237,114 @@ async function trackVisitor() {
         const userAgent = navigator.userAgent;
         const deviceInfo = getDeviceInfo(userAgent);
 
-        // Get IP address and location
+        // Get IP address and location with multiple fallbacks
         let ipData = {
             ip: 'Unknown',
             country: 'Unknown',
             city: 'Unknown',
             region: 'Unknown',
             timezone: 'Unknown',
-            isp: 'Unknown'
+            isp: 'Unknown',
+            latitude: null,
+            longitude: null
         };
 
-        try {
-            // Using ipapi.co for IP and location data (free, no API key needed)
-            const ipResponse = await fetch('https://ipapi.co/json/');
-            if (ipResponse.ok) {
-                const data = await ipResponse.json();
-                ipData = {
-                    ip: data.ip || 'Unknown',
-                    country: data.country_name || 'Unknown',
-                    city: data.city || 'Unknown',
-                    region: data.region || 'Unknown',
-                    timezone: data.timezone || 'Unknown',
-                    isp: data.org || 'Unknown',
-                    latitude: data.latitude || null,
-                    longitude: data.longitude || null
-                };
+        // Try multiple IP geolocation services for reliability
+        let locationFetched = false;
+
+        // Method 1: Try ip-api.com (free, no key needed, 45 req/min)
+        if (!locationFetched) {
+            try {
+                const response1 = await fetch('http://ip-api.com/json/?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query');
+                if (response1.ok) {
+                    const data = await response1.json();
+                    if (data.status === 'success') {
+                        ipData = {
+                            ip: data.query || 'Unknown',
+                            country: data.country || 'Unknown',
+                            city: data.city || 'Unknown',
+                            region: data.regionName || 'Unknown',
+                            timezone: data.timezone || 'Unknown',
+                            isp: data.isp || data.org || 'Unknown',
+                            latitude: data.lat || null,
+                            longitude: data.lon || null
+                        };
+                        locationFetched = true;
+                        console.log('✅ IP location fetched from ip-api.com');
+                    }
+                }
+            } catch (e) {
+                console.warn('ip-api.com failed, trying next service...');
             }
-        } catch (error) {
-            console.warn('Could not fetch IP data:', error);
+        }
+
+        // Method 2: Try ipapi.co (free, 1000/day)
+        if (!locationFetched) {
+            try {
+                const response2 = await fetch('https://ipapi.co/json/');
+                if (response2.ok) {
+                    const data = await response2.json();
+                    if (data.ip && !data.error) {
+                        ipData = {
+                            ip: data.ip || 'Unknown',
+                            country: data.country_name || 'Unknown',
+                            city: data.city || 'Unknown',
+                            region: data.region || 'Unknown',
+                            timezone: data.timezone || 'Unknown',
+                            isp: data.org || 'Unknown',
+                            latitude: data.latitude || null,
+                            longitude: data.longitude || null
+                        };
+                        locationFetched = true;
+                        console.log('✅ IP location fetched from ipapi.co');
+                    }
+                }
+            } catch (e) {
+                console.warn('ipapi.co failed, trying next service...');
+            }
+        }
+
+        // Method 3: Try ipify + ipapi.is (free, unlimited)
+        if (!locationFetched) {
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                if (ipResponse.ok) {
+                    const ipResult = await ipResponse.json();
+                    const ip = ipResult.ip;
+
+                    const geoResponse = await fetch(`https://ipapi.is/json/?ip=${ip}`);
+                    if (geoResponse.ok) {
+                        const data = await geoResponse.json();
+                        ipData = {
+                            ip: ip || 'Unknown',
+                            country: data.location?.country || 'Unknown',
+                            city: data.location?.city || 'Unknown',
+                            region: data.location?.state || 'Unknown',
+                            timezone: data.location?.timezone || 'Unknown',
+                            isp: data.asn?.org || data.company?.name || 'Unknown',
+                            latitude: data.location?.latitude || null,
+                            longitude: data.location?.longitude || null
+                        };
+                        locationFetched = true;
+                        console.log('✅ IP location fetched from ipapi.is');
+                    }
+                }
+            } catch (e) {
+                console.warn('ipapi.is failed');
+            }
+        }
+
+        // Fallback: At least get timezone from browser
+        if (ipData.timezone === 'Unknown') {
+            try {
+                ipData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+            } catch (e) {
+                // Ignore
+            }
+        }
+
+        if (!locationFetched) {
+            console.warn('⚠️ All IP geolocation services failed. Using Unknown values.');
         }
 
         // Prepare visitor data
