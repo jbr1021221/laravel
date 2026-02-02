@@ -252,38 +252,12 @@ async function trackVisitor() {
         // Try multiple IP geolocation services for reliability
         let locationFetched = false;
 
-        // Method 1: Try ip-api.com (free, no key needed, 45 req/min)
+        // Method 1: Try ipapi.co first (HTTPS, works on mobile)
         if (!locationFetched) {
             try {
-                const response1 = await fetch('http://ip-api.com/json/?fields=status,message,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query');
+                const response1 = await fetch('https://ipapi.co/json/');
                 if (response1.ok) {
                     const data = await response1.json();
-                    if (data.status === 'success') {
-                        ipData = {
-                            ip: data.query || 'Unknown',
-                            country: data.country || 'Unknown',
-                            city: data.city || 'Unknown',
-                            region: data.regionName || 'Unknown',
-                            timezone: data.timezone || 'Unknown',
-                            isp: data.isp || data.org || 'Unknown',
-                            latitude: data.lat || null,
-                            longitude: data.lon || null
-                        };
-                        locationFetched = true;
-                        console.log('✅ IP location fetched from ip-api.com');
-                    }
-                }
-            } catch (e) {
-                console.warn('ip-api.com failed, trying next service...');
-            }
-        }
-
-        // Method 2: Try ipapi.co (free, 1000/day)
-        if (!locationFetched) {
-            try {
-                const response2 = await fetch('https://ipapi.co/json/');
-                if (response2.ok) {
-                    const data = await response2.json();
                     if (data.ip && !data.error) {
                         ipData = {
                             ip: data.ip || 'Unknown',
@@ -300,11 +274,11 @@ async function trackVisitor() {
                     }
                 }
             } catch (e) {
-                console.warn('ipapi.co failed, trying next service...');
+                console.warn('ipapi.co failed:', e.message);
             }
         }
 
-        // Method 3: Try ipify + ipapi.is (free, unlimited)
+        // Method 2: Try ipify + ipwhois.app (HTTPS, free)
         if (!locationFetched) {
             try {
                 const ipResponse = await fetch('https://api.ipify.org?format=json');
@@ -312,25 +286,27 @@ async function trackVisitor() {
                     const ipResult = await ipResponse.json();
                     const ip = ipResult.ip;
 
-                    const geoResponse = await fetch(`https://ipapi.is/json/?ip=${ip}`);
+                    const geoResponse = await fetch(`https://ipwho.is/${ip}`);
                     if (geoResponse.ok) {
                         const data = await geoResponse.json();
-                        ipData = {
-                            ip: ip || 'Unknown',
-                            country: data.location?.country || 'Unknown',
-                            city: data.location?.city || 'Unknown',
-                            region: data.location?.state || 'Unknown',
-                            timezone: data.location?.timezone || 'Unknown',
-                            isp: data.asn?.org || data.company?.name || 'Unknown',
-                            latitude: data.location?.latitude || null,
-                            longitude: data.location?.longitude || null
-                        };
-                        locationFetched = true;
-                        console.log('✅ IP location fetched from ipapi.is');
+                        if (data.success) {
+                            ipData = {
+                                ip: ip || 'Unknown',
+                                country: data.country || 'Unknown',
+                                city: data.city || 'Unknown',
+                                region: data.region || 'Unknown',
+                                timezone: data.timezone?.id || 'Unknown',
+                                isp: data.connection?.isp || 'Unknown',
+                                latitude: data.latitude || null,
+                                longitude: data.longitude || null
+                            };
+                            locationFetched = true;
+                            console.log('✅ IP location fetched from ipwho.is');
+                        }
                     }
                 }
             } catch (e) {
-                console.warn('ipapi.is failed');
+                console.warn('ipwho.is failed:', e.message);
             }
         }
 
@@ -437,10 +413,14 @@ function getDeviceInfo(userAgent) {
         osVersion = ua.match(/mac os x ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
     } else if (ua.includes('android')) {
         os = 'Android';
-        osVersion = ua.match(/android ([0-9.]+)/)?.[1] || 'Unknown';
+        // Improved Android version detection
+        const androidMatch = ua.match(/android[\s\/]([0-9.]+)/i);
+        osVersion = androidMatch ? androidMatch[1] : 'Unknown';
     } else if (ua.includes('iphone') || ua.includes('ipad')) {
         os = 'iOS';
-        osVersion = ua.match(/os ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
+        // Improved iOS version detection
+        const iosMatch = ua.match(/os[\s\/]([0-9_]+)/i);
+        osVersion = iosMatch ? iosMatch[1].replace(/_/g, '.') : 'Unknown';
     } else if (ua.includes('linux')) {
         os = 'Linux';
     }
