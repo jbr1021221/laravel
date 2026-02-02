@@ -278,31 +278,25 @@ async function trackVisitor() {
             }
         }
 
-        // Method 2: Try ipify + ipwhois.app (HTTPS, free)
+        // Method 2: Try ipwho.is (HTTPS, free, doesn't need external IP)
         if (!locationFetched) {
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
-                if (ipResponse.ok) {
-                    const ipResult = await ipResponse.json();
-                    const ip = ipResult.ip;
-
-                    const geoResponse = await fetch(`https://ipwho.is/${ip}`);
-                    if (geoResponse.ok) {
-                        const data = await geoResponse.json();
-                        if (data.success) {
-                            ipData = {
-                                ip: ip || 'Unknown',
-                                country: data.country || 'Unknown',
-                                city: data.city || 'Unknown',
-                                region: data.region || 'Unknown',
-                                timezone: data.timezone?.id || 'Unknown',
-                                isp: data.connection?.isp || 'Unknown',
-                                latitude: data.latitude || null,
-                                longitude: data.longitude || null
-                            };
-                            locationFetched = true;
-                            console.log('✅ IP location fetched from ipwho.is');
-                        }
+                const response = await fetch('https://ipwho.is/');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        ipData = {
+                            ip: data.ip || 'Unknown',
+                            country: data.country || 'Unknown',
+                            city: data.city || 'Unknown',
+                            region: data.region || 'Unknown',
+                            timezone: data.timezone?.id || 'Unknown',
+                            isp: data.connection?.isp || 'Unknown',
+                            latitude: data.latitude || null,
+                            longitude: data.longitude || null
+                        };
+                        locationFetched = true;
+                        console.log('✅ IP location fetched from ipwho.is');
                     }
                 }
             } catch (e) {
