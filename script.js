@@ -317,6 +317,30 @@ async function trackVisitor() {
             console.warn('⚠️ All IP geolocation services failed. Using Unknown values.');
         }
 
+        // Advanced: Try Client Hints API for real Android version (fixes Android 10 masking)
+        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+            try {
+                const hints = await navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'model', 'uaFullVersion']);
+                const platform = hints.platform || '';
+
+                if (platform.toLowerCase() === 'android') {
+                    // Convert major version from "13.0.0" to "13"
+                    const majorVersion = parseInt(hints.platformVersion.split('.')[0]);
+                    if (majorVersion > 0) {
+                        deviceInfo.os = 'Android';
+                        deviceInfo.osVersion = majorVersion.toString();
+                    }
+                }
+
+                // Also get precise model if available
+                if (hints.model) {
+                    deviceInfo.model = hints.model;
+                }
+            } catch (e) {
+                console.warn('Client Hints API failed:', e);
+            }
+        }
+
         // Prepare visitor data
         const visitorData = {
             timestamp: new Date().toISOString(),
@@ -338,6 +362,7 @@ async function trackVisitor() {
                 browserVersion: deviceInfo.browserVersion,
                 os: deviceInfo.os,
                 osVersion: deviceInfo.osVersion,
+                model: deviceInfo.model || 'Unknown',  // Added model
                 platform: navigator.platform || 'Unknown',
                 language: navigator.language || 'Unknown',
                 screenResolution: `${screen.width}x${screen.height}`,
