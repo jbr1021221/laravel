@@ -13,6 +13,19 @@
 </head>
 
 <body>
+    <!-- Top Contact Bar -->
+    <div class="top-contact-bar">
+        <div class="contact-wrapper">
+            <a href="mailto:threwbew@gmail.com" class="top-contact-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                <span><strong>Contact Me:</strong> threwbew@gmail.com</span>
+            </a>
+        </div>
+    </div>
+
     <!-- Settings Button -->
     <!-- COMMENTED OUT - Uncomment to enable settings
     <button class="settings-btn" id="settingsBtn" title="Event Settings">
@@ -290,7 +303,7 @@
             </div>
         </div>
     </div>
-<!-- COMMENTED OUT SECTION
+    <!-- COMMENTED OUT SECTION
 
         <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -627,29 +640,40 @@
         </div>
 COMMENTED OUT SECTION -->
 
-        <!-- Footer Section -->
+    <!-- Footer Section -->
 
-        <footer>
-            <h3>Total Time Remaining</h3>
-            <div class="footer-countdown">
-                <div class="total-time-unit">
-                    <div class="total-time-number" id="totalHours">0</div>
-                    <div class="total-time-label">Hours Left</div>
-                </div>
-                <div class="total-time-unit">
-                    <div class="total-time-number" id="totalMinutes">0</div>
-                    <div class="total-time-label">Minutes Left</div>
-                </div>
-                <div class="total-time-unit">
-                    <div class="total-time-number" id="totalSeconds">0</div>
-                    <div class="total-time-label">Seconds Left</div>
-                </div>
+    <footer>
+        <h3>Total Time Remaining</h3>
+        <div class="footer-countdown">
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalHours">0</div>
+                <div class="total-time-label">Hours Left</div>
             </div>
-        </footer>
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalMinutes">0</div>
+                <div class="total-time-label">Minutes Left</div>
+            </div>
+            <div class="total-time-unit">
+                <div class="total-time-number" id="totalSeconds">0</div>
+                <div class="total-time-label">Seconds Left</div>
+            </div>
+        </div>
 
-        <!-- Scripts -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="script.js"></script>
+        <!-- Contact Info -->
+        <div class="footer-contact">
+            <a href="mailto:threwbew@gmail.com" class="contact-email">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                threwbew@gmail.com
+            </a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

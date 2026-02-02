@@ -1,0 +1,26 @@
+# Admin Dashboard Files (KEEP PRIVATE - DO NOT DEPLOY)
+admin.html
+admin-styles.css
+admin-script.js
+ADMIN_README.md
+SECURITY_GUIDE.md
+PASSWORD_GUIDE.md
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env
+.env.local
