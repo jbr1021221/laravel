@@ -485,7 +485,7 @@ function getDeviceInfo(userAgent) {
                 break;
             }
         }
-    } else if (ua.includes('iphone') || ua.includes('ipad')) {
+    } else if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod')) {
         os = 'iOS';
         // Improved iOS version detection
         const iosMatch = ua.match(/os[\s\/]([0-9_]+)/i);
@@ -496,6 +496,46 @@ function getDeviceInfo(userAgent) {
             model = 'iPhone';
         } else if (ua.includes('ipad')) {
             model = 'iPad';
+        } else if (ua.includes('ipod')) {
+            model = 'iPod';
+        }
+    } else if (ua.includes('mac os')) {
+        // Check if this is actually an iOS device masquerading as macOS
+        // Modern iOS devices (iOS 13+) report as "Macintosh" to prevent fingerprinting
+        const isMobileSafari = ua.includes('safari') &&
+            !ua.includes('chrome') &&
+            (ua.includes('mobile') || navigator.maxTouchPoints > 1);
+
+        if (isMobileSafari) {
+            // This is actually an iOS device
+            os = 'iOS';
+            // Try to get version from Mac OS X version (they sometimes match)
+            const macMatch = ua.match(/mac os x ([0-9_]+)/);
+            if (macMatch) {
+                osVersion = macMatch[1].replace(/_/g, '.');
+            } else {
+                osVersion = 'Unknown';
+            }
+
+            // Determine if iPhone or iPad based on screen size and touch points
+            if (navigator.maxTouchPoints > 1) {
+                // Check screen size to differentiate iPhone from iPad
+                const screenWidth = screen.width;
+                const screenHeight = screen.height;
+                const maxDimension = Math.max(screenWidth, screenHeight);
+
+                if (maxDimension >= 1024) {
+                    model = 'iPad';
+                } else {
+                    model = 'iPhone';
+                }
+            } else {
+                model = 'iPhone'; // Default to iPhone
+            }
+        } else {
+            // Actually a Mac
+            os = 'macOS';
+            osVersion = ua.match(/mac os x ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
         }
     } else if (ua.includes('linux')) {
         os = 'Linux';
