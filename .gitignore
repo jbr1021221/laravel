@@ -24,3 +24,4 @@ npm-debug.log*
 # Environment variables
 .env
 .env.local
+firebase-config.js

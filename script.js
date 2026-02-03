@@ -13,15 +13,7 @@ const YOUTUBE_FALLBACK_SUBS = 36900;
 // Excluded IP addresses (won't be tracked as visitors)
 // const EXCLUDED_IPS = ['37.111.193.184', '27.147.182.17', '37.111.193.252'];
 
-// Firebase Configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyC5Hx9B2F0TixsKgt0QcYzH8o6d_53orjU",
-    authDomain: "countdown-timer-70514.firebaseapp.com",
-    projectId: "countdown-timer-70514",
-    storageBucket: "countdown-timer-70514.firebasestorage.app",
-    messagingSenderId: "1096357142795",
-    appId: "1:1096357142795:web:82a796be8cf2efd2cdc20e"
-};
+// Firebase Configuration is loaded from firebase-config.js
 
 // Global variables
 let customEvents = [];
