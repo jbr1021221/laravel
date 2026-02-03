@@ -37,8 +37,38 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
+}
+
+.sale-badge {
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(238, 82, 83, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: pulse-soft 2s infinite;
+    cursor: default;
+}
+
+@keyframes pulse-soft {
+    0% {
+        box-shadow: 0 0 0 0 rgba(238, 82, 83, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(238, 82, 83, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(238, 82, 83, 0);
+    }
 }
 
 .top-contact-link {
@@ -46,18 +76,32 @@ body {
     align-items: center;
     gap: 8px;
     color: #4a5568;
+    text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     padding: 8px 16px;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.6);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    cursor: default;
+    transition: all 0.3s ease;
+}
+
+.top-contact-link:hover {
+    color: #2d3748;
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .top-contact-link svg {
     flex-shrink: 0;
     opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.top-contact-link:hover svg {
+    opacity: 1;
 }
 
 @keyframes slideDown {
@@ -555,18 +599,32 @@ footer h3 {
     align-items: center;
     gap: 8px;
     color: #4a5568;
+    text-decoration: none;
     font-size: 15px;
     font-weight: 500;
     padding: 12px 24px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.6);
     border: 1px solid rgba(0, 0, 0, 0.06);
-    cursor: default;
+    transition: all 0.3s ease;
+}
+
+.contact-email:hover {
+    color: #2d3748;
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .contact-email svg {
     flex-shrink: 0;
     opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.contact-email:hover svg {
+    opacity: 1;
 }
 
 /* ---- Keyframe Animations ---- */

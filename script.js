@@ -10,6 +10,9 @@ const YOUTUBE_CHANNEL_ID = 'UC_4-9w-BOmQlw3KvPtqmdEA';
 const YOUTUBE_GOAL_SUBS = 50000;
 const YOUTUBE_FALLBACK_SUBS = 36900;
 
+// Excluded IP addresses (won't be tracked as visitors)
+// const EXCLUDED_IPS = ['37.111.193.184', '27.147.182.17', '37.111.193.252'];
+
 // Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyC5Hx9B2F0TixsKgt0QcYzH8o6d_53orjU",
@@ -317,13 +320,17 @@ async function trackVisitor() {
             console.warn('⚠️ All IP geolocation services failed. Using Unknown values.');
         }
 
-        // Advanced: Try Client Hints API for real Android version and model (fixes Android 10 masking)
+        // Check if IP should be excluded from tracking
+        if (EXCLUDED_IPS.includes(ipData.ip)) {
+            console.log(`🚫 IP ${ipData.ip} is excluded from visitor tracking`);
+            return; // Skip tracking for this IP
+        }
+
+        // Advanced: Try Client Hints API for real Android version (fixes Android 10 masking)
         if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
             try {
                 const hints = await navigator.userAgentData.getHighEntropyValues(['platform', 'platformVersion', 'model', 'uaFullVersion']);
                 const platform = hints.platform || '';
-
-                console.log('📱 Client Hints API data:', hints);
 
                 if (platform.toLowerCase() === 'android') {
                     // Convert major version from "13.0.0" to "13"
@@ -331,25 +338,17 @@ async function trackVisitor() {
                     if (majorVersion > 0) {
                         deviceInfo.os = 'Android';
                         deviceInfo.osVersion = majorVersion.toString();
-                        console.log(`✅ Updated Android version to: ${majorVersion}`);
                     }
                 }
 
-                // Get precise model if available (Client Hints provides accurate model)
-                if (hints.model && hints.model !== '') {
+                // Also get precise model if available
+                if (hints.model) {
                     deviceInfo.model = hints.model;
-                    console.log(`✅ Updated device model to: ${hints.model}`);
-                } else if (!deviceInfo.model) {
-                    console.log('⚠️ Client Hints model not available, using User-Agent parsed model');
                 }
             } catch (e) {
                 console.warn('Client Hints API failed:', e);
             }
-        } else {
-            console.log('ℹ️ Client Hints API not available, using User-Agent only');
         }
-
-        console.log('📊 Final device info:', deviceInfo);
 
         // Prepare visitor data
         const visitorData = {
@@ -383,17 +382,9 @@ async function trackVisitor() {
             pageUrl: window.location.href
         };
 
-        // Debug: Log what we're about to save
-        console.log('📝 About to save visitor data:');
-        console.log('   IP:', visitorData.ip);
-        console.log('   Device Type:', visitorData.device.type);
-        console.log('   Device Model:', visitorData.device.model);
-        console.log('   OS:', visitorData.device.os, visitorData.device.osVersion);
-        console.log('   Browser:', visitorData.device.browser, visitorData.device.browserVersion);
-
         // Store in Firebase
         await addDoc(collection(db, "visitors"), visitorData);
-        console.log('✅ Visitor tracked successfully!');
+        console.log('✅ Visitor tracked successfully:', visitorData);
 
     } catch (error) {
         console.error('Error tracking visitor:', error);
@@ -435,10 +426,9 @@ function getDeviceInfo(userAgent) {
         browserVersion = ua.match(/(?:opera|opr)\/([0-9.]+)/)?.[1] || 'Unknown';
     }
 
-    // Detect OS and Model
+    // Detect OS
     let os = 'Unknown';
     let osVersion = 'Unknown';
-    let model = null;
 
     if (ua.includes('windows')) {
         os = 'Windows';
@@ -454,89 +444,11 @@ function getDeviceInfo(userAgent) {
         // Improved Android version detection
         const androidMatch = ua.match(/android[\s\/]([0-9.]+)/i);
         osVersion = androidMatch ? androidMatch[1] : 'Unknown';
-
-        // Try to extract device model from User-Agent
-        // Common patterns: "Build/", "SM-", "SAMSUNG", etc.
-        const modelPatterns = [
-            /\(Linux; Android [^;]+; ([^)]+)\)/i,  // Standard Android pattern
-            /; ([^;]+) Build\//i,                   // Build pattern
-            /(SM-[A-Z0-9]+)/i,                      // Samsung models
-            /(SAMSUNG[- ]?[A-Z0-9]+)/i,             // Samsung brand
-            /(Pixel [0-9A-Za-z ]+)/i,               // Google Pixel
-            /(Redmi [^;)]+)/i,                      // Xiaomi Redmi
-            /(Mi [^;)]+)/i,                         // Xiaomi Mi
-            /(POCO [^;)]+)/i,                       // POCO
-            /(OnePlus [^;)]+)/i,                    // OnePlus
-            /(Nokia [^;)]+)/i,                      // Nokia
-            /(Moto [^;)]+)/i,                       // Motorola
-            /(LG-[A-Z0-9]+)/i,                      // LG
-            /(OPPO [^;)]+)/i,                       // OPPO
-            /(vivo [^;)]+)/i,                       // Vivo
-            /(Realme [^;)]+)/i,                     // Realme
-        ];
-
-        for (const pattern of modelPatterns) {
-            const match = userAgent.match(pattern);
-            if (match && match[1]) {
-                model = match[1].trim();
-                // Clean up common suffixes
-                model = model.replace(/Build.*$/i, '').trim();
-                model = model.replace(/\).*$/i, '').trim();
-                break;
-            }
-        }
-    } else if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod')) {
+    } else if (ua.includes('iphone') || ua.includes('ipad')) {
         os = 'iOS';
         // Improved iOS version detection
         const iosMatch = ua.match(/os[\s\/]([0-9_]+)/i);
         osVersion = iosMatch ? iosMatch[1].replace(/_/g, '.') : 'Unknown';
-
-        // Detect iPhone/iPad model
-        if (ua.includes('iphone')) {
-            model = 'iPhone';
-        } else if (ua.includes('ipad')) {
-            model = 'iPad';
-        } else if (ua.includes('ipod')) {
-            model = 'iPod';
-        }
-    } else if (ua.includes('mac os')) {
-        // Check if this is actually an iOS device masquerading as macOS
-        // Modern iOS devices (iOS 13+) report as "Macintosh" to prevent fingerprinting
-        const isMobileSafari = ua.includes('safari') &&
-            !ua.includes('chrome') &&
-            (ua.includes('mobile') || navigator.maxTouchPoints > 1);
-
-        if (isMobileSafari) {
-            // This is actually an iOS device
-            os = 'iOS';
-            // Try to get version from Mac OS X version (they sometimes match)
-            const macMatch = ua.match(/mac os x ([0-9_]+)/);
-            if (macMatch) {
-                osVersion = macMatch[1].replace(/_/g, '.');
-            } else {
-                osVersion = 'Unknown';
-            }
-
-            // Determine if iPhone or iPad based on screen size and touch points
-            if (navigator.maxTouchPoints > 1) {
-                // Check screen size to differentiate iPhone from iPad
-                const screenWidth = screen.width;
-                const screenHeight = screen.height;
-                const maxDimension = Math.max(screenWidth, screenHeight);
-
-                if (maxDimension >= 1024) {
-                    model = 'iPad';
-                } else {
-                    model = 'iPhone';
-                }
-            } else {
-                model = 'iPhone'; // Default to iPhone
-            }
-        } else {
-            // Actually a Mac
-            os = 'macOS';
-            osVersion = ua.match(/mac os x ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown';
-        }
     } else if (ua.includes('linux')) {
         os = 'Linux';
     }
@@ -546,8 +458,7 @@ function getDeviceInfo(userAgent) {
         browser,
         browserVersion,
         os,
-        osVersion,
-        model
+        osVersion
     };
 }
 
@@ -656,7 +567,6 @@ function verifyPassword() {
 
 function renderEventsList() {
     const list = document.getElementById('eventsList');
-    if (!list) return; // Element doesn't exist on this page
     if (!customEvents.length) { list.innerHTML = '<p class="no-events">No events.</p>'; return; }
 
     list.innerHTML = customEvents.map(e => `
