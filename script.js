@@ -11,7 +11,7 @@ const YOUTUBE_GOAL_SUBS = 50000;
 const YOUTUBE_FALLBACK_SUBS = 36900;
 
 // Excluded IP addresses (won't be tracked as visitors)
-// const EXCLUDED_IPS = ['37.111.193.184', '27.147.182.17', '37.111.193.252'];
+const EXCLUDED_IPS = ['37.111.193.252'];
 
 // Firebase Configuration is loaded from firebase-config.js
 

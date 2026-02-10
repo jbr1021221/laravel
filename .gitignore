@@ -6,6 +6,9 @@ ADMIN_README.md
 SECURITY_GUIDE.md
 PASSWORD_GUIDE.md
 
+# Admin Dashboard Repository (separate repo)
+threwbew-admin/
+
 # System files
 .DS_Store
 Thumbs.db
