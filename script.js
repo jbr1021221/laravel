@@ -181,6 +181,7 @@ function updateElement(elementId, value) {
 // ----------------------------------------------------
 
 async function initializeFirebaseAndEvents() {
+    console.log("Script Version: 2.1 - Fix Applied");
     try {
         console.log("Starting Firebase initialization...");
         const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js");
@@ -197,6 +198,10 @@ async function initializeFirebaseAndEvents() {
         orderBy = firestore.orderBy;
         onSnapshot = firestore.onSnapshot;
 
+        if (typeof firebaseConfig === 'undefined') {
+            throw new Error("firebaseConfig is not defined. Check firebase-config.js");
+        }
+
         const app = initializeApp(firebaseConfig);
         db = firestore.getFirestore(app);
 
@@ -210,9 +215,12 @@ async function initializeFirebaseAndEvents() {
         setupEventListeners();
 
     } catch (e) {
-        console.error("Failed to load Firebase. Countdown still works, but events won't save.", e);
+        console.error("Failed to load Firebase or initialize:", e);
         // Fallback: render empty list or local placeholder
-        document.getElementById('eventsList').innerHTML = '<div class="alert alert-warning">Database connection failed. Check internet connection.</div>';
+        const eventsList = document.getElementById('eventsList');
+        if (eventsList) {
+            eventsList.innerHTML = '<div class="alert alert-warning">Database connection failed. Check console for details.</div>';
+        }
     }
 }
 
