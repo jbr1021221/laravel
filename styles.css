@@ -2170,3 +2170,18 @@ textarea.form-control {
         width: 100%;
     }
 }
+/* ---- Floating Image (Top Right) ---- */
+.floating-image {
+    position: fixed;
+    top: 0;
+    right: 0;
+    max-width: 300px; /* Default size */
+    z-index: 2000; /* Ensure it's above the top contact bar */
+    pointer-events: none; /* Allow clicking elements behind it if needed */
+}
+
+@media (max-width: 768px) {
+    .floating-image {
+        max-width: 150px; /* Smaller on mobile */
+    }
+}
