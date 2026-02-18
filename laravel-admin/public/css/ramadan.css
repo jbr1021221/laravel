@@ -1,0 +1,227 @@
+/* Ramadan Theme */
+:root {
+    --ramadan-bg-start: #1e1b4b;
+    /* Indigo 950 */
+    --ramadan-bg-end: #312e81;
+    /* Indigo 900 */
+    --ramadan-gold: #fbbf24;
+    /* Amber 400 */
+    --ramadan-accent: #8b5cf6;
+    /* Violet 500 */
+    --text-primary: #f8fafc;
+    /* Slate 50 */
+    --text-secondary: #94a3b8;
+    /* Slate 400 */
+    --card-bg: rgba(30, 41, 59, 0.7);
+    /* Slate 800 with opacity */
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: radial-gradient(circle at top right, var(--ramadan-bg-end), var(--ramadan-bg-start));
+    color: var(--text-primary);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background Stars */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 50px 160px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 90px 40px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0, 0, 0, 0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    opacity: 0.3;
+    z-index: -1;
+    pointer-events: none;
+    animation: twinkle 5s infinite;
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: translateY(-2px);
+    }
+
+    100% {
+        opacity: 0.3;
+        transform: translateY(0);
+    }
+}
+
+/* Crescent Moon */
+body::after {
+    content: "☪";
+    position: fixed;
+    top: 5%;
+    right: 5%;
+    font-size: 15rem;
+    color: var(--ramadan-gold);
+    opacity: 0.05;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Hanging Lantern (CSS Shape) */
+.lantern {
+    position: fixed;
+    top: 60px;
+    /* Hang lower */
+    width: 30px;
+    height: 40px;
+    background: var(--ramadan-gold);
+    border-radius: 5px;
+    box-shadow: 0 0 20px 5px rgba(251, 191, 36, 0.4);
+    z-index: 1000;
+    /* Ensure on top */
+    pointer-events: none;
+    animation: swing 3s ease-in-out infinite alternate;
+    transform-origin: top center;
+}
+
+.lantern::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    /* Reach the top of the viewport */
+    left: 50%;
+    width: 2px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-50%);
+}
+
+@keyframes swing {
+    from {
+        transform: rotate(-5deg);
+    }
+
+    to {
+        transform: rotate(5deg);
+    }
+}
+
+/* Override Panels */
+.sidebar,
+.dashboard-header {
+    background: rgba(15, 23, 42, 0.85) !important;
+    /* Slamte 900 */
+    backdrop-filter: blur(10px);
+    border-color: var(--border-color) !important;
+}
+
+.main-content {
+    background: transparent !important;
+}
+
+/* Typography Overrides */
+.logo,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.stat-value {
+    color: var(--text-primary) !important;
+}
+
+p,
+span,
+.stat-label,
+.stat-info,
+.nav-item {
+    color: var(--text-secondary);
+}
+
+.logo svg {
+    color: var(--ramadan-gold) !important;
+}
+
+/* Navigation */
+.nav-item:hover,
+.nav-item.active {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: var(--ramadan-gold) !important;
+}
+
+.nav-item.active svg {
+    color: var(--ramadan-gold);
+}
+
+/* Cards */
+.stat-card,
+.chart-card,
+.table-card,
+.user-profile,
+.refresh-btn {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(5px);
+}
+
+.user-profile,
+.refresh-btn {
+    color: var(--text-primary);
+}
+
+.refresh-btn svg {
+    color: var(--text-primary);
+}
+
+/* Tables */
+.data-table th {
+    background: rgba(15, 23, 42, 0.5) !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.data-table td {
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Inputs */
+.search-input {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ramadan-gold);
+    border-radius: 4px;
+}

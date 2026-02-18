@@ -701,3 +701,171 @@ setInterval(updateYouTubeProgress, 5 * 60 * 1000);
 
 // 3. Load Firebase in LOCAL BACKGROUND (doesn't block UI)
 initializeFirebaseAndEvents();
+
+// =====================================================
+// RAMADAN THEME AUTOMATION
+// =====================================================
+
+/**
+ * Checks if the current date is in the month of Ramadan (9th month of Hijri calendar)
+ * using the Aladhan API. If yes, applies the Ramadan theme.
+ */
+async function checkRamadanStatus() {
+    try {
+        // Get current date/time in Bangladesh Time (Asia/Dhaka)
+        const bdDate = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+        const today = new Date(bdDate);
+
+        // Function to format date as DD-MM-YYYY for API
+        const formatDateForAPI = (dateObj) => {
+            const dd = String(dateObj.getDate()).padStart(2, '0');
+            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const yyyy = dateObj.getFullYear();
+            return `${dd}-${mm}-${yyyy}`;
+        };
+
+        let queryDate = today;
+        let dateString = formatDateForAPI(today);
+
+        console.log(`Checking Ramadan status for Bangladesh (Dhaka): ${dateString}`);
+
+        // 1. Initial Call: Get Today's Data
+        let response = await fetch(`https://api.aladhan.com/v1/timingsByCity/${dateString}?city=Dhaka&country=Bangladesh&method=1`);
+
+        if (response.ok) {
+            let data = await response.json();
+
+            // Check Maghrib Time
+            const maghribTimeStr = data.data.timings.Maghrib; // "18:05" (24h format)
+            const [maghribHour, maghribMinute] = maghribTimeStr.split(':').map(Number);
+
+            const currentHour = today.getHours();
+            const currentMinute = today.getMinutes();
+
+            // Determine if it is after Maghrib
+            const isAfterMaghrib = (currentHour > maghribHour) ||
+                (currentHour === maghribHour && currentMinute >= maghribMinute);
+
+            // Fetch Tomorrow if after Maghrib (Islamic Day Transition)
+            if (isAfterMaghrib) {
+                console.log(`🌙 After Maghrib (${maghribTimeStr}). Switching to next Islamic day.`);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() + 1);
+                const tomorrowString = formatDateForAPI(tomorrow);
+
+                response = await fetch(`https://api.aladhan.com/v1/timingsByCity/${tomorrowString}?city=Dhaka&country=Bangladesh&method=1`);
+                if (response.ok) {
+                    data = await response.json();
+                }
+            }
+
+            // Extract API Hijri Data
+            let hijriData = data.data.date.hijri;
+            let hDay = parseInt(hijriData.day);
+            let hMonth = hijriData.month.number;
+            let hYear = hijriData.year;
+            let hMonthName = hijriData.month.en;
+
+            // MANUAL ADJUSTMENT FOR BANGLADESH SIGHTING
+            // User: Feb 18 is 29 Shaban. API: Feb 18 is 1 Ramadan. 
+            // Difference: API is 1 or 2 days AHEAD.
+            // Rule: Subtract 1 day from API result to match sighting.
+            // If API says 1 Ramadan -> Real is 30 Shaban (or 29).
+            // If API says 2 Ramadan -> Real is 1 Ramadan.
+
+            // To make it simpler, we decrement the Hijri day by 1.
+            // If day becomes 0, we flip to previous month (simple logic for now or specific overrides).
+
+            // Specific Override for Start of Ramadan 2026 to ensure accuracy:
+            // API: 1 Ramadan. Real: 30 Shaban.
+            // API: 2 Ramadan. Real: 1 Ramadan.
+
+            if (hMonth === 9) { // If API says Ramadan
+                if (hDay === 1) {
+                    // API 1 Ram -> Real: 30 Shaban
+                    hDay = 30;
+                    hMonth = 8;
+                    hMonthName = "Shaʿbān";
+                } else {
+                    // API X Ram -> Real: (X-1) Ram
+                    hDay = hDay - 1;
+                }
+            } else if (hMonth === 10 && hDay === 1) {
+                // API 1 Shawwal -> Real: 30 Ramadan
+                hDay = 30;
+                hMonth = 9;
+                hMonthName = "Ramaḍān";
+            }
+
+            // Format: "1 Ramadan 1447"
+            let hijriDateHTML = `${hDay} ${hMonthName} ${hYear}`;
+
+            // Log for debugging
+            console.log(`🇧🇩 Adjusted Hijri: ${hijriDateHTML} (API was: ${hijriData.day} ${hijriData.month.en})`);
+
+            // If Ramadan (Month 9), bold the word "Ramadan" & Enable Theme
+            if (hMonth === 9) {
+                hijriDateHTML = `${hDay} <strong>Ramadan</strong> ${hYear}`;
+                enableRamadanTheme();
+            } else {
+                disableRamadanTheme();
+            }
+
+            // Update the separate Hijri Date element
+            const hijriEl = document.getElementById('hijriDate');
+            if (hijriEl) {
+                hijriEl.innerHTML = hijriDateHTML;
+            }
+
+        } else {
+            console.warn('Failed to fetch Hijri date for Bangladesh:', response.status);
+        }
+    } catch (error) {
+        console.error('Error checking Ramadan status:', error);
+    }
+}
+
+function enableRamadanTheme() {
+    // Check if theme is already applied
+    if (document.getElementById('ramadan-theme-link')) return;
+
+    console.log('🌙 Ramadan Crescent Sighted! Activating Ramadan Vibe.');
+
+    const link = document.createElement('link');
+    link.id = 'ramadan-theme-link';
+    link.rel = 'stylesheet';
+    link.href = 'ramadan.css';
+
+    document.head.appendChild(link);
+    document.body.classList.add('ramadan-mode');
+
+    // Show Dua
+    const duaEl = document.getElementById('ramadanDua');
+    if (duaEl) {
+        duaEl.style.display = 'block';
+        // Add fade-in class if we had CSS animation, for now block is fine
+        duaEl.style.opacity = '0';
+        setTimeout(() => {
+            duaEl.style.transition = 'opacity 1s ease';
+            duaEl.style.opacity = '1';
+        }, 100);
+    }
+}
+
+function disableRamadanTheme() {
+    const link = document.getElementById('ramadan-theme-link');
+    if (link) {
+        console.log('Shawwal Moon Sighted! Reverting to previous style.');
+        link.remove();
+        document.body.classList.remove('ramadan-mode');
+    }
+
+    // Hide Dua
+    const duaEl = document.getElementById('ramadanDua');
+    if (duaEl) {
+        duaEl.style.display = 'none';
+    }
+}
+
+// Check on load
+checkRamadanStatus();

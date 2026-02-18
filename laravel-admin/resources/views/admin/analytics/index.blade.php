@@ -14,8 +14,13 @@
     
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/admin-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ramadan.css') }}">
 </head>
 <body>
+    <div class="lantern"></div>
+    <div class="lantern" style="left: 20%; animation-delay: 1s; animation-duration: 4s;"></div>
+    <div class="lantern" style="left: 80%; animation-delay: 0.5s; animation-duration: 3.5s;"></div>
+    <div class="lantern" style="left: 90%; animation-delay: 1.5s;"></div>
     <div class="dashboard-screen">
         <!-- Sidebar -->
         <aside class="sidebar">
