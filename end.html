@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title> </title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #000;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Aurora ── */
+    #aurora-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .aurora {
+      position: absolute;
+      border-radius: 50%;
+      will-change: transform;
+    }
+
+    .aurora-1 {
+      top: -10vw; left: -15vw;
+      width: 70vw; height: 70vw;
+      background: radial-gradient(circle, rgba(20,30,80,0.25), transparent 70%);
+      filter: blur(100px);
+      animation: drift1 15s ease-in-out infinite alternate;
+    }
+
+    .aurora-2 {
+      bottom: -10vw; right: -15vw;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(30,15,60,0.2), transparent 70%);
+      filter: blur(120px);
+      animation: drift2 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(40px,-40px) scale(1.15); }
+    }
+
+    @keyframes drift2 {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(-30px,30px) scale(1.1); }
+    }
+
+    /* ── Spotlight ── */
+    #spotlight {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      background: radial-gradient(
+        circle at 50% 40%,
+        rgba(255,255,255,0.035) 0%,
+        rgba(255,255,255,0.01)  30%,
+        transparent 65%
+      );
+      animation: spotlightIn 2.5s ease forwards;
+      will-change: transform, opacity;
+    }
+
+    @keyframes spotlightIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: 1; transform: scale(1);   }
+    }
+
+    /* ── Scanlines ── */
+    #scanlines {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
+      );
+    }
+
+    /* ── Grain ── */
+    #grain {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.035;
+    }
+
+    /* ── Page ── */
+    .page-content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .page-wrapper {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Opening line */
+    .opening-line {
+      margin-top: 140px;
+      font-size: 13px;
+      letter-spacing: 6px;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      font-family: Georgia, serif;
+      line-height: 1.8;
+      min-height: 24px;
+      opacity: 0;
+    }
+
+    /* Draw line */
+    #reveal-line {
+      width: 0;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 50px auto 60px;
+      transition: width 1.5s ease;
+    }
+
+    /* Stats */
+    .stats { width: 100%; }
+
+    .stat-block {
+      width: 100%;
+      padding: 100px 30px;
+      text-align: center;
+      transition: transform 0.1s ease;
+      will-change: transform;
+    }
+
+    .stat-number {
+      display: block;
+      font-family: Georgia, serif;
+      font-size: clamp(72px, 16vw, 130px);
+      font-weight: 200;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: -3px;
+      line-height: 1;
+      opacity: 0;
+      transform: scale(2.5);
+      will-change: transform, opacity;
+    }
+
+    .stat-number.revealed {
+      animation: statReveal 1.2s ease-out forwards;
+    }
+
+    @keyframes statReveal {
+      0%   { opacity: 0; transform: scale(2.5); }
+      100% { opacity: 1; transform: scale(1);   }
+    }
+
+    .stat-sep {
+      width: 30px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 20px auto;
+    }
+
+    .stat-desc {
+      font-size: 11px;
+      letter-spacing: 5px;
+      color: rgba(255,255,255,0.18);
+      font-family: 'Courier New', monospace;
+      text-transform: lowercase;
+      min-height: 1em;
+      opacity: 0;
+    }
+
+    /* Closing */
+    .closing-line {
+      font-size: 12px;
+      letter-spacing: 5px;
+      color: rgba(255,255,255,0.12);
+      text-align: center;
+      font-family: Georgia, serif;
+      margin-top: 60px;
+      margin-bottom: 80px;
+      line-height: 1.8;
+      opacity: 0;
+      transition: opacity 3s ease;
+    }
+
+    /* Form */
+    .contact-wrap {
+      width: 100%;
+      max-width: 400px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 2s ease, transform 2s ease;
+    }
+
+    .form-note {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.15);
+      text-align: center;
+      margin-bottom: 30px;
+      font-family: Georgia, serif;
+    }
+
+    .contact-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      font-family: Georgia, serif;
+      font-size: 15px;
+      padding: 14px 0;
+      width: 100%;
+      outline: none;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .contact-input::placeholder {
+      color: rgba(255,255,255,0.18);
+      font-style: italic;
+    }
+
+    .contact-send {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.25);
+      font-family: Georgia, serif;
+      font-size: 12px;
+      letter-spacing: 5px;
+      padding: 10px 0;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      text-align: center;
+      transition: color 0.4s ease;
+    }
+
+    .contact-send:hover { color: rgba(255,255,255,0.5); }
+
+    /* Bottom rule */
+    .bottom-rule {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 60px auto 120px;
+      opacity: 0;
+      transition: opacity 2s ease;
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .page-wrapper { padding: 0 25px; }
+      .stat-block   { padding: 50px 25px; }
+      .aurora-1     { filter: blur(60px); }
+      .aurora-2     { filter: blur(60px); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="aurora-container">
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+</div>
+<div id="spotlight"></div>
+<div id="scanlines"></div>
+<canvas id="grain"></canvas>
+
+<div class="page-content">
+  <div class="page-wrapper">
+
+    <p class="opening-line" id="el-opening"></p>
+
+    <div id="reveal-line"></div>
+
+    <div class="stats">
+      <div class="stat-block" id="el-block-0">
+        <span class="stat-number" id="elapsedDays">—</span>
+        <div class="stat-sep"></div>
+        <div class="stat-desc" id="desc-0" data-text="days of waiting">days of waiting</div>
+      </div>
+      <div class="stat-block" id="el-block-1">
+        <span class="stat-number" id="elapsedHours">—</span>
+        <div class="stat-sep"></div>
+        <div class="stat-desc" id="desc-1" data-text="hours of silence">hours of silence</div>
+      </div>
+      <div class="stat-block" id="el-block-2">
+        <span class="stat-number" id="signalLostDays">—</span>
+        <div class="stat-sep"></div>
+        <div class="stat-desc" id="desc-2" data-text="days without a word">days without a word</div>
+      </div>
+      <div class="stat-block" id="el-block-3">
+        <span class="stat-number">95</span>
+        <div class="stat-sep"></div>
+        <div class="stat-desc" id="desc-3" data-text="a promise that had a deadline">a promise that had a deadline</div>
+      </div>
+    </div>
+
+    <p class="closing-line" id="el-closing">if you were here, you would know.</p>
+
+    <div class="contact-wrap" id="el-form">
+      <div id="contactForm">
+        <p class="form-note">you can still leave a word.</p>
+        <input class="contact-input" id="msgInput" type="text" placeholder="say something..." autocomplete="off">
+        <input class="contact-input" id="contactInput" type="text" placeholder="leave a way to reach you..." autocomplete="off">
+        <button class="contact-send" type="button" onclick="sendToTelegram()">send</button>
+        <p id="formStatus" style="font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.2);font-family:Georgia,serif;text-align:center;margin-top:20px;min-height:20px;"></p>
+      </div>
+    </div>
+
+    <div class="bottom-rule" id="el-rule"></div>
+
+  </div>
+</div>
+
+<script>
+  // ── Date calculations ──
+  const now        = new Date();
+  const opStart    = new Date('2026-01-26T00:00:00');
+  const signalEnd  = new Date('2026-02-01T00:00:00');
+
+  const elapsedDays    = Math.max(0, Math.floor((now - opStart)   / 86400000));
+  const elapsedHours   = Math.max(0, Math.floor((now - opStart)   / 3600000));
+  const signalLostDays = Math.max(0, Math.floor((now - signalEnd) / 86400000));
+
+  document.getElementById('elapsedDays').textContent    = elapsedDays.toLocaleString();
+  document.getElementById('elapsedHours').textContent   = elapsedHours.toLocaleString();
+  document.getElementById('signalLostDays').textContent = signalLostDays.toLocaleString();
+
+  // ── Grain ──
+  (function() {
+    const canvas = document.getElementById('grain');
+    const ctx    = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    function gen() {
+      const img = ctx.createImageData(canvas.width, canvas.height);
+      for (let i = 0; i < img.data.length; i += 4) {
+        const v = Math.random() * 255 | 0;
+        img.data[i] = img.data[i+1] = img.data[i+2] = v;
+        img.data[i+3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+    gen();
+    const mobile = window.matchMedia('(pointer:coarse)').matches;
+    setInterval(gen, mobile ? 200 : 120);
+  })();
+
+  // ── Global state ──
+  let skip           = false;
+  let spotlightLive  = false;
+  let spotlightScrollY = 40;
+  let spotlightCX      = 50;
+
+  const isMobile        = window.matchMedia('(pointer:coarse)').matches;
+  const spotlightEl     = document.getElementById('spotlight');
+  const auroraContainer = document.getElementById('aurora-container');
+  const statBlocks      = document.querySelectorAll('.stat-block');
+
+  // Spotlight parallax activates after intro animation finishes
+  setTimeout(() => { spotlightLive = true; }, 2600);
+
+  // ── Typewriter (respects skip flag) ──
+  function typewrite(el, text, charDelay, onDone) {
+    el.textContent = '';
+    el.style.opacity = '1';
+    let i = 0;
+    (function step() {
+      if (skip) return;
+      if (i < text.length) {
+        el.textContent += text[i++];
+        setTimeout(step, charDelay);
+      } else if (onDone) {
+        onDone();
+      }
+    })();
+  }
+
+  // ── Show everything instantly ──
+  function showAll() {
+    skip = true;
+
+    const openEl = document.getElementById('el-opening');
+    openEl.textContent = 'The wait is over. The page remains.';
+    openEl.style.opacity = '1';
+
+    const line = document.getElementById('reveal-line');
+    line.style.transition = 'none';
+    line.style.width = '200px';
+
+    document.querySelectorAll('.stat-number').forEach(el => {
+      el.style.animation = 'none';
+      el.style.opacity   = '1';
+      el.style.transform = 'scale(1)';
+    });
+
+    document.querySelectorAll('.stat-desc').forEach(el => {
+      el.textContent   = el.dataset.text;
+      el.style.opacity = '1';
+    });
+
+    const closing = document.getElementById('el-closing');
+    closing.style.transition = 'none';
+    closing.style.opacity    = '1';
+
+    const form = document.getElementById('el-form');
+    form.style.transition = 'none';
+    form.style.opacity    = '1';
+    form.style.transform  = 'translateY(0)';
+
+    const rule = document.getElementById('el-rule');
+    rule.style.transition = 'none';
+    rule.style.opacity    = '1';
+  }
+
+  // ── Auto-play sequence ──
+  function autoPlay() {
+    // Step 2 (1.5s): opening typewriter
+    setTimeout(() => {
+      if (skip) return;
+      typewrite(document.getElementById('el-opening'), 'The wait is over. The page remains.', 60);
+    }, 1500);
+
+    // Step 3 (4s): draw horizontal line
+    setTimeout(() => {
+      if (skip) return;
+      document.getElementById('reveal-line').style.width = '200px';
+    }, 4000);
+
+    // Step 4: stat reveals in sequence
+    [5500, 7000, 8500, 10000].forEach((delay, i) => {
+      setTimeout(() => {
+        if (skip) return;
+        const numEl  = document.getElementById('el-block-' + i).querySelector('.stat-number');
+        const descEl = document.getElementById('desc-' + i);
+        numEl.classList.add('revealed');
+        setTimeout(() => {
+          if (skip) return;
+          typewrite(descEl, descEl.dataset.text, 50);
+        }, 1200);
+      }, delay);
+    });
+
+    // Step 5 (~11s): closing line
+    setTimeout(() => {
+      if (skip) return;
+      document.getElementById('el-closing').style.opacity = '1';
+    }, 11000);
+
+    // Step 6 (13s): form + rule
+    setTimeout(() => {
+      if (skip) return;
+      const form = document.getElementById('el-form');
+      form.style.opacity   = '1';
+      form.style.transform = 'translateY(0)';
+      document.getElementById('el-rule').style.opacity = '1';
+    }, 13000);
+  }
+
+  // ── Scroll reveals for returning visitors ──
+  function setupScrollReveals() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const numEl = entry.target.querySelector('.stat-number');
+        if (numEl) {
+          numEl.style.transition = 'opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1)';
+          numEl.style.opacity    = '1';
+          numEl.style.transform  = 'scale(1)';
+        }
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.2 });
+
+    statBlocks.forEach(block => {
+      const numEl = block.querySelector('.stat-number');
+      if (numEl) {
+        numEl.style.opacity   = '0';
+        numEl.style.transform = 'scale(1.3)';
+      }
+      observer.observe(block);
+    });
+  }
+
+  // ── Visit logic ──
+  const isFirstVisit = !localStorage.getItem('sv_seen');
+
+  if (isFirstVisit) {
+    autoPlay();
+    window.addEventListener('scroll', function onSkip() {
+      showAll();
+      window.removeEventListener('scroll', onSkip);
+    }, { passive: true, once: true });
+  } else {
+    showAll();
+    setupScrollReveals();
+  }
+
+  // ── Spotlight background helper ──
+  function updateSpotlightBg() {
+    spotlightEl.style.background =
+      'radial-gradient(circle at ' + spotlightCX + '% ' + spotlightScrollY + '%,' +
+      'rgba(255,255,255,0.035) 0%,' +
+      'rgba(255,255,255,0.01) 30%,' +
+      'transparent 65%)';
+  }
+
+  // ── Scroll: background color + spotlight drift ──
+  let rafPending = false;
+
+  function onScroll() {
+    const maxScroll = document.body.scrollHeight - window.innerHeight;
+    const pct = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
+
+    // Interpolate body background: #000 → #060810 → #080610
+    let r, g, b;
+    if (pct < 0.5) {
+      const t = pct * 2;
+      r = (6  * t) | 0;
+      g = (8  * t) | 0;
+      b = (16 * t) | 0;
+    } else {
+      const t = (pct - 0.5) * 2;
+      r = (6  + 2  * t) | 0;
+      g = (8  - 2  * t) | 0;
+      b = 16;
+    }
+    document.body.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+
+    // Spotlight vertical drift: 30% → 70%
+    spotlightScrollY = 30 + pct * 40;
+    updateSpotlightBg();
+
+    rafPending = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(onScroll);
+    }
+  }, { passive: true });
+
+  // ── Mouse / Touch parallax ──
+  spotlightEl.style.transition     = 'transform 0.1s ease';
+  auroraContainer.style.transition = 'transform 0.1s ease';
+
+  function applyParallax(rawX, rawY) {
+    const s = isMobile ? 0.3 : 1.0;
+    const x = rawX * s;
+    const y = rawY * s;
+
+    // Layer 1 – spotlight element translation
+    if (spotlightLive) {
+      spotlightEl.style.transform = 'translate(' + (x * 0.3) + 'px,' + (y * 0.3) + 'px)';
+    }
+
+    // Layer 2 – stat blocks move opposite direction
+    statBlocks.forEach(el => {
+      el.style.transform = 'translate(' + (x * -0.5) + 'px,' + (y * -0.5) + 'px)';
+    });
+
+    // Layer 3 – aurora container
+    auroraContainer.style.transform = 'translate(' + (x * 0.8) + 'px,' + (y * 0.8) + 'px)';
+
+    // Subtle spotlight center shift with mouse
+    spotlightCX = 50 + x * 0.15;
+    updateSpotlightBg();
+  }
+
+  if (!isMobile) {
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 20;
+      const y = (e.clientY / window.innerHeight - 0.5) * 20;
+      applyParallax(x, y);
+    }, { passive: true });
+  } else {
+    document.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      const x = (t.clientX / window.innerWidth  - 0.5) * 20;
+      const y = (t.clientY / window.innerHeight - 0.5) * 20;
+      applyParallax(x, y);
+    }, { passive: true });
+  }
+
+  // ── Send directly to Telegram ──
+  async function sendToTelegram() {
+    const message = document.getElementById('msgInput').value.trim();
+    const contact = document.getElementById('contactInput').value.trim();
+    if (!message) return;
+
+    const today  = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('msg_data') || '{"count":0,"date":""}');
+    if (stored.date !== today) { stored.count = 0; stored.date = today; }
+    if (stored.count >= 3) {
+      document.getElementById('formStatus').textContent = "that's enough for now.";
+      return;
+    }
+
+    const t1      = '8500037665:AAERTLLcPViSzzxVMSfrb';
+    const t2      = '37JUHdKvLRS7dc';
+    const TOKEN   = t1 + t2;
+    const CHAT_ID = '1720075033';
+
+    const text = `new message\n\ncontact: ${contact || 'not provided'}\nmessage: ${message}`;
+
+    try {
+      const res  = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ chat_id: CHAT_ID, text })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        stored.count++;
+        localStorage.setItem('msg_data', JSON.stringify(stored));
+        document.getElementById('formStatus').textContent = 'sent.';
+        document.getElementById('msgInput').value    = '';
+        document.getElementById('contactInput').value = '';
+      } else {
+        document.getElementById('formStatus').textContent = 'failed.';
+      }
+    } catch (e) {
+      document.getElementById('formStatus').textContent = 'failed.';
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,4 +1,8 @@
 
+const TEST_MODE = true; // SET TO false WHEN DONE TESTING
+
+let missionEnded = false;
+
 // Constants
 const CIRCUMFERENCE = 2 * Math.PI * 72;
 const TARGET_DATE = new Date('May 1, 2026 00:00:00').getTime();
@@ -76,6 +80,16 @@ function updateProgress(progressPercent, totalRemainingSeconds) {
 }
 
 function updateCountdown() {
+    if (TEST_MODE) {
+        if (!missionEnded) {
+            missionEnded = true;
+            setTimeout(() => {
+                window.location.href = 'end.html';
+            }, 3000);
+        }
+        return;
+    }
+
     const now = new Date();
     const difference = TARGET_DATE - now.getTime();
 
@@ -139,6 +153,13 @@ function updateCountdownMode(difference, now) {
 }
 
 function updateCountUpMode(elapsed) {
+    if (!missionEnded) {
+        missionEnded = true;
+        setTimeout(() => {
+            window.location.href = 'end.html';
+        }, 1500);
+    }
+
     const years = Math.floor(elapsed / (1000 * 60 * 60 * 24 * 365.25));
     const remainingAfterYears = elapsed % (1000 * 60 * 60 * 24 * 365.25);
     const months = Math.floor(remainingAfterYears / (1000 * 60 * 60 * 24 * 30.44));
