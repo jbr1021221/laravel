@@ -1,5 +1,5 @@
 
-const TEST_MODE = true; // SET TO false WHEN DONE TESTING
+const TEST_MODE = false; // SET TO false WHEN DONE TESTING
 
 let missionEnded = false;
 
@@ -578,7 +578,7 @@ async function toggleEventStatus(eventId) {
 
 function verifyPassword() {
     const entered = document.getElementById('passwordInput').value;
-    if (entered === (localStorage.getItem('settingsPassword') || 'admin123')) {
+    if (entered === (localStorage.getItem('settingsPassword') || '')) {
         bootstrap.Modal.getInstance(document.getElementById('passwordModal')).hide();
         setTimeout(() => new bootstrap.Modal(document.getElementById('settingsModal')).show(), 300);
     } else {
