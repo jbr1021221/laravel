@@ -14,55 +14,49 @@
       overflow-x: hidden;
     }
 
-    /* ── Aurora ── */
-    #aurora-container {
+    /* ── Background layer ── */
+    .ch2-bg {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
     }
 
-    .aurora {
-      position: absolute;
-      border-radius: 50%;
-      will-change: transform;
-    }
-
     .aurora-1 {
+      position: absolute;
       top: -10vw; left: -15vw;
       width: 70vw; height: 70vw;
+      border-radius: 50%;
       background: radial-gradient(circle, rgba(20,30,80,0.25), transparent 70%);
       filter: blur(100px);
       animation: drift1 15s ease-in-out infinite alternate;
+      will-change: transform;
+      transition: transform 0.1s ease;
     }
-
     .aurora-2 {
+      position: absolute;
       bottom: -10vw; right: -15vw;
       width: 60vw; height: 60vw;
+      border-radius: 50%;
       background: radial-gradient(circle, rgba(30,15,60,0.2), transparent 70%);
       filter: blur(120px);
       animation: drift2 18s ease-in-out infinite alternate;
+      will-change: transform;
+      transition: transform 0.1s ease;
     }
-
     @keyframes drift1 {
       from { transform: translate(0,0) scale(1); }
       to   { transform: translate(40px,-40px) scale(1.15); }
     }
-
     @keyframes drift2 {
       from { transform: translate(0,0) scale(1); }
       to   { transform: translate(-30px,30px) scale(1.1); }
     }
 
-    /* ── Spotlight ── */
-    #spotlight {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
+    .spotlight {
+      position: absolute;
+      inset: 0;
       opacity: 0;
       background: radial-gradient(
         circle at 50% 40%,
@@ -72,20 +66,16 @@
       );
       animation: spotlightIn 2.5s ease forwards;
       will-change: transform, opacity;
+      transition: transform 0.1s ease;
     }
-
     @keyframes spotlightIn {
       from { opacity: 0; transform: scale(0.8); }
-      to   { opacity: 1; transform: scale(1);   }
+      to   { opacity: 1; transform: scale(1); }
     }
 
-    /* ── Scanlines ── */
-    #scanlines {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 2;
-      pointer-events: none;
+    .scanlines {
+      position: absolute;
+      inset: 0;
       background: repeating-linear-gradient(
         to bottom,
         transparent 0,
@@ -95,35 +85,58 @@
       );
     }
 
-    /* ── Grain ── */
-    #grain {
-      position: fixed;
-      top: 0; left: 0;
+    canvas.grain {
+      position: absolute;
+      inset: 0;
       width: 100%; height: 100%;
-      z-index: 3;
-      pointer-events: none;
       opacity: 0.035;
     }
 
-    /* ── Page ── */
-    .page-content {
+    /* ── Content ── */
+    .chapter-two {
       position: relative;
-      z-index: 10;
+      min-height: 100vh;
       width: 100%;
     }
 
-    .page-wrapper {
+    .ch2-content {
+      position: relative;
+      z-index: 10;
       max-width: 620px;
       margin: 0 auto;
-      padding: 0 40px;
+      padding: 0 40px 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      will-change: transform;
+      transition: transform 0.1s ease;
     }
 
-    /* Opening line */
-    .opening-line {
-      margin-top: 140px;
+    /* Chapter label */
+    .ch2-chap {
+      margin-top: 90px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 50px;
+    }
+    .ch2-chap > span {
+      font-size: 10px;
+      letter-spacing: 6px;
+      color: rgba(255,255,255,0.15);
+      font-family: 'Courier New', monospace;
+      text-transform: lowercase;
+    }
+    .ch2-chap .line {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* Opening typewriter line */
+    .ch2-opening {
       font-size: 13px;
       letter-spacing: 6px;
       color: rgba(255,255,255,0.3);
@@ -131,70 +144,68 @@
       font-family: Georgia, serif;
       line-height: 1.8;
       min-height: 24px;
-      opacity: 0;
+    }
+    .cursor {
+      display: inline-block;
+      width: 1px;
+      height: 0.85em;
+      background: rgba(255,255,255,0.3);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 0.9s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
     }
 
-    /* Draw line */
-    #reveal-line {
-      width: 0;
+    /* Horizontal reveal line */
+    .ch2-rule {
       height: 1px;
       background: rgba(255,255,255,0.08);
       margin: 50px auto 60px;
-      transition: width 1.5s ease;
+      animation: ruleIn 1.5s 0.6s ease both;
+    }
+    @keyframes ruleIn {
+      from { width: 0;     opacity: 0; }
+      to   { width: 200px; opacity: 1; }
     }
 
-    /* Stats */
-    .stats { width: 100%; }
-
-    .stat-block {
+    /* Stat block */
+    .ch2-stat {
       width: 100%;
-      padding: 100px 30px;
+      padding: 80px 30px;
       text-align: center;
-      transition: opacity 1s ease, transform 1s cubic-bezier(0.16,1,0.3,1);
-      will-change: transform;
     }
 
-    .stat-number {
+    .num {
       display: block;
-      font-family: Georgia, serif;
       font-size: clamp(72px, 16vw, 130px);
       font-weight: 200;
       color: rgba(255,255,255,0.88);
       letter-spacing: -3px;
       line-height: 1;
-      opacity: 0;
-      transform: scale(2.5);
-      will-change: transform, opacity;
+      font-family: Georgia, serif;
     }
+    .num.serif-italic { font-style: italic; }
 
-    .stat-number.revealed {
-      animation: statReveal 1.2s ease-out forwards;
-    }
-
-    @keyframes statReveal {
-      0%   { opacity: 0; transform: scale(2.5); }
-      100% { opacity: 1; transform: scale(1);   }
-    }
-
-    .stat-sep {
+    .sep {
       width: 30px;
       height: 1px;
       background: rgba(255,255,255,0.1);
       margin: 20px auto;
     }
 
-    .stat-desc {
-      font-size: 11px;
-      letter-spacing: 5px;
-      color: rgba(255,255,255,0.18);
+    .label {
+      font-size: 15px;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.28);
       font-family: 'Courier New', monospace;
       text-transform: lowercase;
-      min-height: 1em;
-      opacity: 0;
     }
 
-    /* Closing */
-    .closing-line {
+    /* Closing line */
+    .ch2-closing {
       font-size: 12px;
       letter-spacing: 5px;
       color: rgba(255,255,255,0.12);
@@ -203,17 +214,12 @@
       margin-top: 60px;
       margin-bottom: 80px;
       line-height: 1.8;
-      opacity: 0;
-      transition: opacity 3s ease;
     }
 
-    /* Form */
-    .contact-wrap {
+    /* Contact form */
+    .ch2-form {
       width: 100%;
       max-width: 400px;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 2s ease, transform 2s ease;
     }
 
     .form-note {
@@ -225,7 +231,10 @@
       font-family: Georgia, serif;
     }
 
-    .contact-input {
+    .field { margin-bottom: 20px; }
+
+    .field textarea,
+    .field input {
       background: transparent;
       border: none;
       border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -235,16 +244,16 @@
       padding: 14px 0;
       width: 100%;
       outline: none;
-      margin-bottom: 20px;
+      resize: none;
       display: block;
     }
-
-    .contact-input::placeholder {
+    .field textarea::placeholder,
+    .field input::placeholder {
       color: rgba(255,255,255,0.18);
       font-style: italic;
     }
 
-    .contact-send {
+    .submit {
       background: transparent;
       border: none;
       border-bottom: 1px solid rgba(255,255,255,0.15);
@@ -259,392 +268,361 @@
       text-align: center;
       transition: color 0.4s ease;
     }
+    .submit:hover { color: rgba(255,255,255,0.5); }
 
-    .contact-send:hover { color: rgba(255,255,255,0.5); }
+    .form-status {
+      font-size: 11px;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.2);
+      font-family: Georgia, serif;
+      text-align: center;
+      margin-top: 20px;
+      min-height: 20px;
+    }
 
     /* Bottom rule */
-    .bottom-rule {
+    .ch2-end-rule {
       width: 40px;
       height: 1px;
       background: rgba(255,255,255,0.08);
-      margin: 60px auto 120px;
-      opacity: 0;
-      transition: opacity 2s ease;
+      margin: 60px auto 0;
     }
 
     /* Mobile */
     @media (max-width: 480px) {
-      .page-wrapper { padding: 0 25px; }
-      .stat-block   { padding: 50px 25px; }
-      .aurora-1     { filter: blur(60px); }
-      .aurora-2     { filter: blur(60px); }
+      .ch2-content { padding: 0 25px 80px; }
+      .ch2-stat    { padding: 50px 25px; }
+      .aurora-1    { filter: blur(60px); }
+      .aurora-2    { filter: blur(60px); }
     }
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-<div id="aurora-container">
-  <div class="aurora aurora-1"></div>
-  <div class="aurora aurora-2"></div>
-</div>
-<div id="spotlight"></div>
-<div id="scanlines"></div>
-<canvas id="grain"></canvas>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="firebase-config.js"></script>
+  <script>
+    const e = React.createElement;
+    const TARGET_DATE    = new Date('2026-05-01T00:00:00+06:00');
+    const ORIGIN_PROMISE = new Date('2025-01-26T00:00:00+06:00');
+    const EXCLUDED_IPS   = ['37.111.193.252'];
 
-<div class="page-content">
-  <div class="page-wrapper">
+    // ── Visitor tracking (mirrors script.js logic) ──
+    async function trackVisitor() {
+      try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getFirestore, collection, addDoc } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+        if (typeof firebaseConfig === 'undefined') return;
+        const app = initializeApp(firebaseConfig, 'end-page');
+        const db  = getFirestore(app);
 
-    <p class="opening-line" id="el-opening"></p>
+        // IP geolocation
+        let ipData = { ip: 'Unknown', country: 'Unknown', city: 'Unknown', region: 'Unknown', timezone: 'Unknown', isp: 'Unknown', latitude: null, longitude: null };
+        try {
+          const r = await fetch('https://ipapi.co/json/');
+          if (r.ok) { const d = await r.json(); if (d.ip && !d.error) { ipData = { ip: d.ip, country: d.country_name || 'Unknown', city: d.city || 'Unknown', region: d.region || 'Unknown', timezone: d.timezone || 'Unknown', isp: d.org || 'Unknown', latitude: d.latitude || null, longitude: d.longitude || null }; } }
+        } catch (_) {}
+        if (ipData.ip === 'Unknown') {
+          try {
+            const r = await fetch('https://ipwho.is/');
+            if (r.ok) { const d = await r.json(); if (d.success) { ipData = { ip: d.ip, country: d.country || 'Unknown', city: d.city || 'Unknown', region: d.region || 'Unknown', timezone: d.timezone?.id || 'Unknown', isp: d.connection?.isp || 'Unknown', latitude: d.latitude || null, longitude: d.longitude || null }; } }
+          } catch (_) {}
+        }
+        if (ipData.timezone === 'Unknown') {
+          try { ipData.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown'; } catch (_) {}
+        }
+        if (EXCLUDED_IPS.includes(ipData.ip)) return;
 
-    <div id="reveal-line"></div>
+        // Device info
+        const ua = navigator.userAgent;
+        const ual = ua.toLowerCase();
+        let deviceType = 'Desktop';
+        if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) deviceType = 'Tablet';
+        else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle/i.test(ua)) deviceType = 'Mobile';
+        let browser = 'Unknown', browserVersion = 'Unknown';
+        if (ual.includes('firefox'))     { browser = 'Firefox'; browserVersion = ual.match(/firefox\/([0-9.]+)/)?.[1] || 'Unknown'; }
+        else if (ual.includes('edg'))    { browser = 'Edge';    browserVersion = ual.match(/edg\/([0-9.]+)/)?.[1]     || 'Unknown'; }
+        else if (ual.includes('chrome')) { browser = 'Chrome';  browserVersion = ual.match(/chrome\/([0-9.]+)/)?.[1]  || 'Unknown'; }
+        else if (ual.includes('safari')) { browser = 'Safari';  browserVersion = ual.match(/version\/([0-9.]+)/)?.[1] || 'Unknown'; }
+        let os = 'Unknown', osVersion = 'Unknown';
+        if (ual.includes('windows'))     { os = 'Windows'; osVersion = ual.includes('nt 10') ? '10/11' : 'Unknown'; }
+        else if (ual.includes('android')){ os = 'Android'; osVersion = ual.match(/android[\s\/]([0-9.]+)/i)?.[1] || 'Unknown'; }
+        else if (ual.includes('iphone') || ual.includes('ipad')) { os = 'iOS'; osVersion = ual.match(/os[\s\/]([0-9_]+)/i)?.[1]?.replace(/_/g, '.') || 'Unknown'; }
+        else if (ual.includes('mac os')) { os = 'macOS'; osVersion = ual.match(/mac os x ([0-9_]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown'; }
+        else if (ual.includes('linux'))  { os = 'Linux'; }
 
-    <div class="stats">
-      <div class="stat-block" id="el-block-0">
-        <span class="stat-number" id="stat1">—</span>
-        <div class="stat-sep"></div>
-        <div class="stat-desc" id="desc-0" data-text="days of waiting">days of waiting</div>
-      </div>
-      <div class="stat-block" id="el-block-1">
-        <span class="stat-number" id="stat2">—</span>
-        <div class="stat-sep"></div>
-        <div class="stat-desc" id="desc-1" data-text="hours of silence">hours of silence</div>
-      </div>
-      <div class="stat-block" id="el-block-2">
-        <span class="stat-number" id="stat3">—</span>
-        <div class="stat-sep"></div>
-        <div class="stat-desc" id="desc-2" data-text="days without a word">days without a word</div>
-      </div>
-      <div class="stat-block" id="el-block-3">
-        <span class="stat-number" id="stat4">95</span>
-        <div class="stat-sep"></div>
-        <div class="stat-desc" id="desc-3" data-text="a promise that had a deadline">a promise that had a deadline</div>
-      </div>
-    </div>
-
-    <p class="closing-line" id="el-closing">if you were here, you would know.</p>
-
-    <div class="contact-wrap" id="el-form">
-      <div id="contactForm">
-        <p class="form-note">you can still leave a word.</p>
-        <input class="contact-input" id="msgInput" type="text" placeholder="say something..." autocomplete="off">
-        <input class="contact-input" id="contactInput" type="text" placeholder="leave a way to reach you..." autocomplete="off">
-        <button class="contact-send" type="button" onclick="sendToTelegram()">send</button>
-        <p id="formStatus" style="font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.2);font-family:Georgia,serif;text-align:center;margin-top:20px;min-height:20px;"></p>
-      </div>
-    </div>
-
-    <div class="bottom-rule" id="el-rule"></div>
-
-  </div>
-</div>
-
-<script>
-  // ── Date calculations ──
-  document.addEventListener('DOMContentLoaded', () => {
-
-    const start  = new Date('2026-01-26T00:00:00');
-    const signal = new Date('2026-02-01T00:00:00');
-    const now    = new Date();
-
-    const d1 = Math.floor((now - start)  / (1000 * 60 * 60 * 24));
-    const d2 = Math.floor((now - start)  / (1000 * 60 * 60));
-    const d3 = Math.floor((now - signal) / (1000 * 60 * 60 * 24));
-
-    document.getElementById('stat1').textContent = d1;
-    document.getElementById('stat2').textContent = d2;
-    document.getElementById('stat3').textContent = d3;
-
-  });
-
-  // ── Grain ──
-  (function() {
-    const canvas = document.getElementById('grain');
-    const ctx    = canvas.getContext('2d');
-    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
-    function gen() {
-      const img = ctx.createImageData(canvas.width, canvas.height);
-      for (let i = 0; i < img.data.length; i += 4) {
-        const v = Math.random() * 255 | 0;
-        img.data[i] = img.data[i+1] = img.data[i+2] = v;
-        img.data[i+3] = 255;
+        await addDoc(collection(db, 'visitors'), {
+          timestamp: new Date().toISOString(),
+          ip: ipData.ip,
+          location: { country: ipData.country, city: ipData.city, region: ipData.region, timezone: ipData.timezone, coordinates: ipData.latitude && ipData.longitude ? { lat: ipData.latitude, lng: ipData.longitude } : null },
+          isp: ipData.isp,
+          device: { type: deviceType, browser, browserVersion, os, osVersion, platform: navigator.platform || 'Unknown', language: navigator.language || 'Unknown', screenResolution: `${screen.width}x${screen.height}`, viewport: `${window.innerWidth}x${window.innerHeight}` },
+          userAgent: ua,
+          referrer: document.referrer || 'Direct',
+          pageUrl: window.location.href
+        });
+      } catch (err) {
+        console.warn('Visitor tracking failed:', err);
       }
-      ctx.putImageData(img, 0, 0);
     }
-    gen();
-    const mobile = window.matchMedia('(pointer:coarse)').matches;
-    setInterval(gen, mobile ? 200 : 120);
-  })();
 
-  // ── Global state ──
-  let skip           = false;
-  let spotlightLive  = false;
-  let spotlightScrollY = 40;
-  let spotlightCX      = 50;
+    // ── Typewriter hook ──
+    function useTypewriter(text, speed, delay) {
+      const [out, setOut] = React.useState('');
+      const [done, setDone] = React.useState(false);
+      React.useEffect(() => {
+        const seen = localStorage.getItem('ch2_seen');
+        if (seen) { setOut(text); setDone(true); return; }
+        let i = 0, timerId;
+        const startId = setTimeout(() => {
+          timerId = setInterval(() => {
+            i++;
+            setOut(text.slice(0, i));
+            if (i >= text.length) {
+              clearInterval(timerId);
+              setDone(true);
+              localStorage.setItem('ch2_seen', '1');
+            }
+          }, speed);
+        }, delay);
+        return () => { clearTimeout(startId); clearInterval(timerId); };
+      }, []);
+      return [out, done];
+    }
 
-  const isMobile        = window.matchMedia('(pointer:coarse)').matches;
-  const spotlightEl     = document.getElementById('spotlight');
-  const auroraContainer = document.getElementById('aurora-container');
-  const statBlocks      = document.querySelectorAll('.stat-block');
+    // ── Film grain hook ──
+    function useGrain() {
+      const ref = React.useRef(null);
+      React.useEffect(() => {
+        const canvas = ref.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const isMobile = window.matchMedia('(pointer:coarse)').matches;
+        const interval = isMobile ? 200 : 120;
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        resize();
+        window.addEventListener('resize', resize);
+        function gen() {
+          const img = ctx.createImageData(canvas.width, canvas.height);
+          const d = img.data;
+          for (let i = 0; i < d.length; i += 4) {
+            const v = Math.random() * 255 | 0;
+            d[i] = d[i+1] = d[i+2] = v;
+            d[i+3] = 255;
+          }
+          ctx.putImageData(img, 0, 0);
+        }
+        gen();
+        const id = setInterval(gen, interval);
+        return () => { clearInterval(id); window.removeEventListener('resize', resize); };
+      }, []);
+      return ref;
+    }
 
-  // Spotlight parallax activates after intro animation finishes
-  setTimeout(() => { spotlightLive = true; }, 2600);
+    // ── Scroll-based background color ──
+    function useScrollBg() {
+      React.useEffect(() => {
+        let pending = false;
+        function onScroll() {
+          if (pending) return;
+          pending = true;
+          requestAnimationFrame(() => {
+            const max = document.body.scrollHeight - window.innerHeight;
+            const pct = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+            let r, g, b;
+            if (pct < 0.5) {
+              const t = pct * 2;
+              r = (6 * t) | 0; g = (8 * t) | 0; b = (16 * t) | 0;
+            } else {
+              const t = (pct - 0.5) * 2;
+              r = (6 + 2 * t) | 0; g = (8 - 2 * t) | 0; b = 16;
+            }
+            document.body.style.backgroundColor = `rgb(${r},${g},${b})`;
+            pending = false;
+          });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+      }, []);
+    }
 
-  // ── Typewriter (respects skip flag) ──
-  function typewrite(el, text, charDelay, onDone) {
-    el.textContent = '';
-    el.style.opacity = '1';
-    let i = 0;
-    (function step() {
-      if (skip) return;
-      if (i < text.length) {
-        el.textContent += text[i++];
-        setTimeout(step, charDelay);
-      } else if (onDone) {
-        onDone();
+    // ── Main component ──
+    function ChapterTwo() {
+      const grainRef = useGrain();
+      useScrollBg();
+
+      React.useEffect(() => { trackVisitor(); }, []);
+
+      const [opening, openDone] = useTypewriter(
+        'the wait is over. the page remains.', 55, 1500
+      );
+
+      // Live clock — updates hourly (stats are hours/days, no need for seconds)
+      const [now, setNow] = React.useState(() => new Date());
+      React.useEffect(() => {
+        const id = setInterval(() => setNow(new Date()), 60_000);
+        return () => clearInterval(id);
+      }, []);
+
+      // Stats
+      const daysOfWaiting    = Math.floor((TARGET_DATE - ORIGIN_PROMISE) / 86_400_000);
+      const sinceMs          = Math.max(0, now - TARGET_DATE);
+      const hoursOfSilence   = Math.floor(sinceMs / 3_600_000);
+      const daysWithoutAWord = Math.floor(sinceMs / 86_400_000);
+
+      // Mouse parallax
+      const [mx, setMx] = React.useState({ x: 0, y: 0 });
+      React.useEffect(() => {
+        const isMobile = window.matchMedia('(pointer:coarse)').matches;
+        const scale = isMobile ? 0.3 : 1.0;
+        function onMove(ev) {
+          const x = ((ev.clientX / window.innerWidth)  - 0.5) * 20 * scale;
+          const y = ((ev.clientY / window.innerHeight) - 0.5) * 20 * scale;
+          setMx({ x, y });
+        }
+        function onTouch(ev) {
+          const t = ev.touches[0];
+          const x = ((t.clientX / window.innerWidth)  - 0.5) * 20 * 0.3;
+          const y = ((t.clientY / window.innerHeight) - 0.5) * 20 * 0.3;
+          setMx({ x, y });
+        }
+        window.addEventListener('mousemove', onMove, { passive: true });
+        window.addEventListener('touchmove', onTouch, { passive: true });
+        return () => {
+          window.removeEventListener('mousemove', onMove);
+          window.removeEventListener('touchmove', onTouch);
+        };
+      }, []);
+
+      // Form state
+      const [message, setMessage] = React.useState('');
+      const [contact, setContact] = React.useState('');
+      const [status,  setStatus]  = React.useState('');
+
+      async function send(ev) {
+        ev.preventDefault();
+        if (!message.trim()) return;
+
+        const today  = new Date().toDateString();
+        const stored = JSON.parse(localStorage.getItem('msg_data') || '{"count":0,"date":""}');
+        if (stored.date !== today) { stored.count = 0; stored.date = today; }
+        if (stored.count >= 3) { setStatus("that's enough for now."); return; }
+
+        const TOKEN   = '8500037665:AAERTLLcPViSzzxVMSfrb37JUHdKvLRS7dc';
+        const CHAT_ID = '1720075033';
+        const text    = `new message\n\ncontact: ${contact || 'not provided'}\nmessage: ${message}`;
+
+        try {
+          const res  = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ chat_id: CHAT_ID, text })
+          });
+          const data = await res.json();
+          if (data.ok) {
+            stored.count++;
+            localStorage.setItem('msg_data', JSON.stringify(stored));
+            setStatus('sent.');
+            setMessage('');
+            setContact('');
+          } else {
+            setStatus('failed.');
+          }
+        } catch {
+          setStatus('failed.');
+        }
       }
-    })();
-  }
 
-  // ── Show everything instantly ──
-  function showAll() {
-    skip = true;
+      const { x, y } = mx;
 
-    const openEl = document.getElementById('el-opening');
-    openEl.textContent = 'The wait is over. The page remains.';
-    openEl.style.opacity = '1';
+      return e('section', { className: 'chapter-two' },
 
-    const line = document.getElementById('reveal-line');
-    line.style.transition = 'none';
-    line.style.width = '200px';
+        // ── Background layers ──
+        e('div', { className: 'ch2-bg' },
+          e('div', { className: 'aurora-1', style: { transform: `translate(${x * -20}px,${y * -20}px)` } }),
+          e('div', { className: 'aurora-2', style: { transform: `translate(${x *  25}px,${y *  25}px)` } }),
+          e('div', { className: 'spotlight' }),
+          e('div', { className: 'scanlines' }),
+          e('canvas', { ref: grainRef, className: 'grain' })
+        ),
 
-    document.querySelectorAll('.stat-number').forEach(el => {
-      el.style.animation = 'none';
-      el.style.opacity   = '1';
-      el.style.transform = 'scale(1)';
-    });
+        // ── Content (no parallax — stays still) ──
+        e('div', { className: 'ch2-content' },
 
-    document.querySelectorAll('.stat-desc').forEach(el => {
-      el.textContent   = el.dataset.text;
-      el.style.opacity = '1';
-    });
+          // Chapter label
+          e('div', { className: 'ch2-chap' },
+            e('span', null, '§ chapter ii'),
+            e('span', { className: 'line' }),
+            e('span', null, 'the silence')
+          ),
 
-    const closing = document.getElementById('el-closing');
-    closing.style.transition = 'none';
-    closing.style.opacity    = '1';
+          // Opening typewriter
+          e('div', { className: 'ch2-opening' },
+            opening,
+            !openDone && e('span', { className: 'cursor' })
+          ),
 
-    const form = document.getElementById('el-form');
-    form.style.transition = 'none';
-    form.style.opacity    = '1';
-    form.style.transform  = 'translateY(0)';
+          // Horizontal rule
+          e('div', { className: 'ch2-rule' }),
 
-    const rule = document.getElementById('el-rule');
-    rule.style.transition = 'none';
-    rule.style.opacity    = '1';
-  }
+          // Stats
+          e('div', { className: 'ch2-stat' },
+            e('span', { className: 'num' }, daysOfWaiting),
+            e('div',  { className: 'sep' }),
+            e('span', { className: 'label' }, 'days of waiting')
+          ),
+          e('div', { className: 'ch2-stat' },
+            e('span', { className: 'num' }, hoursOfSilence.toLocaleString()),
+            e('div',  { className: 'sep' }),
+            e('span', { className: 'label' }, 'hours of silence')
+          ),
+          e('div', { className: 'ch2-stat' },
+            e('span', { className: 'num' }, daysWithoutAWord),
+            e('div',  { className: 'sep' }),
+            e('span', { className: 'label' }, 'days without a word')
+          ),
+          e('div', { className: 'ch2-stat' },
+            e('span', { className: 'num serif-italic' }, '95'),
+            e('div',  { className: 'sep' }),
+            e('span', { className: 'label' }, 'a promise that had a deadline')
+          ),
 
-  // ── Auto-play sequence ──
-  function autoPlay() {
-    // Step 2 (1.5s): opening typewriter
-    setTimeout(() => {
-      if (skip) return;
-      typewrite(document.getElementById('el-opening'), 'The wait is over. The page remains.', 60);
-    }, 1500);
+          // Closing line
+          e('p', { className: 'ch2-closing' }, 'if you were here, you would know.'),
 
-    // Step 3 (4s): draw horizontal line
-    setTimeout(() => {
-      if (skip) return;
-      document.getElementById('reveal-line').style.width = '200px';
-    }, 4000);
+          // Contact form
+          e('form', { className: 'ch2-form', onSubmit: send },
+            e('div', { className: 'form-note' }, 'you can still leave a word.'),
+            e('div', { className: 'field' },
+              e('textarea', {
+                rows: 3,
+                placeholder: 'say something.',
+                value: message,
+                onChange: ev => setMessage(ev.target.value)
+              })
+            ),
+            e('div', { className: 'field' },
+              e('input', {
+                type: 'text',
+                placeholder: 'where to find you (optional).',
+                value: contact,
+                onChange: ev => setContact(ev.target.value)
+              })
+            ),
+            e('button', { type: 'submit', className: 'submit' },
+              status === 'sent.' ? '↵ sent. quiet again.' : '↵ send'
+            ),
+            status && e('p', { className: 'form-status' }, status)
+          ),
 
-    // Step 4: stat reveals in sequence
-    [5500, 7000, 8500, 10000].forEach((delay, i) => {
-      setTimeout(() => {
-        if (skip) return;
-        const numEl  = document.getElementById('el-block-' + i).querySelector('.stat-number');
-        const descEl = document.getElementById('desc-' + i);
-        numEl.classList.add('revealed');
-        setTimeout(() => {
-          if (skip) return;
-          typewrite(descEl, descEl.dataset.text, 50);
-        }, 1200);
-      }, delay);
-    });
-
-    // Step 5 (~11s): closing line
-    setTimeout(() => {
-      if (skip) return;
-      document.getElementById('el-closing').style.opacity = '1';
-    }, 11000);
-
-    // Step 6 (13s): form + rule
-    setTimeout(() => {
-      if (skip) return;
-      const form = document.getElementById('el-form');
-      form.style.opacity   = '1';
-      form.style.transform = 'translateY(0)';
-      document.getElementById('el-rule').style.opacity = '1';
-    }, 13000);
-  }
-
-  // ── Stat reveal (always fires on load) ──
-  function revealStats() {
-    const stats = document.querySelectorAll('.stat-block');
-    stats.forEach((block, index) => {
-      setTimeout(() => {
-        block.style.opacity   = '1';
-        block.style.transform = 'scale(1)';
-      }, index * 600);
-    });
-  }
-
-  window.addEventListener('load', () => {
-    setTimeout(revealStats, 500);
-  });
-
-  // ── Visit logic ──
-  const isFirstVisit = !localStorage.getItem('sv_seen');
-
-  if (isFirstVisit) {
-    localStorage.setItem('sv_seen', '1');
-    autoPlay();
-    window.addEventListener('scroll', function onSkip() {
-      showAll();
-      window.removeEventListener('scroll', onSkip);
-    }, { passive: true, once: true });
-  } else {
-    showAll();
-  }
-
-  // ── Spotlight background helper ──
-  function updateSpotlightBg() {
-    spotlightEl.style.background =
-      'radial-gradient(circle at ' + spotlightCX + '% ' + spotlightScrollY + '%,' +
-      'rgba(255,255,255,0.035) 0%,' +
-      'rgba(255,255,255,0.01) 30%,' +
-      'transparent 65%)';
-  }
-
-  // ── Scroll: background color + spotlight drift ──
-  let rafPending = false;
-
-  function onScroll() {
-    const maxScroll = document.body.scrollHeight - window.innerHeight;
-    const pct = maxScroll > 0 ? Math.min(1, window.scrollY / maxScroll) : 0;
-
-    // Interpolate body background: #000 → #060810 → #080610
-    let r, g, b;
-    if (pct < 0.5) {
-      const t = pct * 2;
-      r = (6  * t) | 0;
-      g = (8  * t) | 0;
-      b = (16 * t) | 0;
-    } else {
-      const t = (pct - 0.5) * 2;
-      r = (6  + 2  * t) | 0;
-      g = (8  - 2  * t) | 0;
-      b = 16;
-    }
-    document.body.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
-
-    // Spotlight vertical drift: 30% → 70%
-    spotlightScrollY = 30 + pct * 40;
-    updateSpotlightBg();
-
-    rafPending = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!rafPending) {
-      rafPending = true;
-      requestAnimationFrame(onScroll);
-    }
-  }, { passive: true });
-
-  // ── Mouse / Touch parallax ──
-  spotlightEl.style.transition     = 'transform 0.1s ease';
-  auroraContainer.style.transition = 'transform 0.1s ease';
-
-  function applyParallax(rawX, rawY) {
-    const s = isMobile ? 0.3 : 1.0;
-    const x = rawX * s;
-    const y = rawY * s;
-
-    // Layer 1 – spotlight element translation
-    if (spotlightLive) {
-      spotlightEl.style.transform = 'translate(' + (x * 0.3) + 'px,' + (y * 0.3) + 'px)';
+          e('div', { className: 'ch2-end-rule' })
+        )
+      );
     }
 
-    // Layer 2 – stat blocks move opposite direction
-    statBlocks.forEach(el => {
-      el.style.transform = 'translate(' + (x * -0.5) + 'px,' + (y * -0.5) + 'px)';
-    });
-
-    // Layer 3 – aurora container
-    auroraContainer.style.transform = 'translate(' + (x * 0.8) + 'px,' + (y * 0.8) + 'px)';
-
-    // Subtle spotlight center shift with mouse
-    spotlightCX = 50 + x * 0.15;
-    updateSpotlightBg();
-  }
-
-  if (!isMobile) {
-    document.addEventListener('mousemove', (e) => {
-      const x = (e.clientX / window.innerWidth  - 0.5) * 20;
-      const y = (e.clientY / window.innerHeight - 0.5) * 20;
-      applyParallax(x, y);
-    }, { passive: true });
-  } else {
-    document.addEventListener('touchmove', (e) => {
-      const t = e.touches[0];
-      const x = (t.clientX / window.innerWidth  - 0.5) * 20;
-      const y = (t.clientY / window.innerHeight - 0.5) * 20;
-      applyParallax(x, y);
-    }, { passive: true });
-  }
-
-  // ── Send directly to Telegram ──
-  async function sendToTelegram() {
-    const message = document.getElementById('msgInput').value.trim();
-    const contact = document.getElementById('contactInput').value.trim();
-    if (!message) return;
-
-    const today  = new Date().toDateString();
-    const stored = JSON.parse(localStorage.getItem('msg_data') || '{"count":0,"date":""}');
-    if (stored.date !== today) { stored.count = 0; stored.date = today; }
-    if (stored.count >= 3) {
-      document.getElementById('formStatus').textContent = "that's enough for now.";
-      return;
-    }
-
-    const t1      = '8500037665:AAERTLLcPViSzzxVMSfrb';
-    const t2      = '37JUHdKvLRS7dc';
-    const TOKEN   = t1 + t2;
-    const CHAT_ID = '1720075033';
-
-    const text = `new message\n\ncontact: ${contact || 'not provided'}\nmessage: ${message}`;
-
-    try {
-      const res  = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ chat_id: CHAT_ID, text })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        stored.count++;
-        localStorage.setItem('msg_data', JSON.stringify(stored));
-        document.getElementById('formStatus').textContent = 'sent.';
-        document.getElementById('msgInput').value    = '';
-        document.getElementById('contactInput').value = '';
-      } else {
-        document.getElementById('formStatus').textContent = 'failed.';
-      }
-    } catch (e) {
-      document.getElementById('formStatus').textContent = 'failed.';
-    }
-  }
-</script>
+    ReactDOM.createRoot(document.getElementById('root')).render(e(ChapterTwo));
+  </script>
 </body>
 </html>
