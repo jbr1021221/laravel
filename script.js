@@ -83,9 +83,6 @@ function updateCountdown() {
     if (TEST_MODE) {
         if (!missionEnded) {
             missionEnded = true;
-            setTimeout(() => {
-                window.location.href = 'end.html';
-            }, 3000);
         }
         return;
     }
@@ -155,9 +152,6 @@ function updateCountdownMode(difference, now) {
 function updateCountUpMode(elapsed) {
     if (!missionEnded) {
         missionEnded = true;
-        setTimeout(() => {
-            window.location.href = 'end.html';
-        }, 1500);
     }
 
     const years = Math.floor(elapsed / (1000 * 60 * 60 * 24 * 365.25));
@@ -890,3 +884,62 @@ function disableRamadanTheme() {
 
 // Check on load
 checkRamadanStatus();
+
+// =====================================================
+// CONTACT FORM
+// =====================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('ch2-contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const messageEl = document.getElementById('ch2-message');
+            const contactEl = document.getElementById('ch2-contact');
+            const submitBtn = document.getElementById('ch2-submit');
+            const statusEl = document.getElementById('ch2-status');
+            
+            const message = messageEl.value;
+            const contact = contactEl.value;
+            
+            if (!message.trim()) return;
+
+            const today = new Date().toDateString();
+            const storedStr = localStorage.getItem('msg_data');
+            let stored = storedStr ? JSON.parse(storedStr) : { count: 0, date: "" };
+            if (stored.date !== today) { stored.count = 0; stored.date = today; }
+            if (stored.count >= 3) { 
+                statusEl.textContent = "that's enough for now."; 
+                statusEl.style.display = 'block';
+                return; 
+            }
+
+            const TOKEN = typeof telegramConfig !== 'undefined' ? telegramConfig.botToken : '8500037665:AAERTLLcPViSzzxVMSfrb37JUHdKvLRS7dc';
+            const CHAT_ID = typeof telegramConfig !== 'undefined' ? telegramConfig.chatId : '1720075033';
+            const text = `new message\n\ncontact: ${contact || 'not provided'}\nmessage: ${message}`;
+
+            try {
+                const res = await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    stored.count++;
+                    localStorage.setItem('msg_data', JSON.stringify(stored));
+                    statusEl.textContent = 'sent.';
+                    statusEl.style.display = 'block';
+                    submitBtn.textContent = '↵ sent. quiet again.';
+                    messageEl.value = '';
+                    contactEl.value = '';
+                } else {
+                    statusEl.textContent = 'failed.';
+                    statusEl.style.display = 'block';
+                }
+            } catch {
+                statusEl.textContent = 'failed.';
+                statusEl.style.display = 'block';
+            }
+        });
+    }
+});

@@ -510,8 +510,8 @@
         if (stored.date !== today) { stored.count = 0; stored.date = today; }
         if (stored.count >= 3) { setStatus("that's enough for now."); return; }
 
-        const TOKEN   = '8500037665:AAERTLLcPViSzzxVMSfrb37JUHdKvLRS7dc';
-        const CHAT_ID = '1720075033';
+        const TOKEN   = typeof telegramConfig !== 'undefined' ? telegramConfig.botToken : '8500037665:AAERTLLcPViSzzxVMSfrb37JUHdKvLRS7dc';
+        const CHAT_ID = typeof telegramConfig !== 'undefined' ? telegramConfig.chatId : '1720075033';
         const text    = `new message\n\ncontact: ${contact || 'not provided'}\nmessage: ${message}`;
 
         try {

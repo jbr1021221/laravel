@@ -10,3 +10,8 @@ const firebaseConfig = {
     messagingSenderId: "1096357142795",
     appId: "1:1096357142795:web:82a796be8cf2efd2cdc20e"
 };
+
+const telegramConfig = {
+    botToken: '8500037665:AAERTLLcPViSzzxVMSfrb37JUHdKvLRS7dc',
+    chatId: '1720075033'
+};
